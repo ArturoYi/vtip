@@ -1,0 +1,50 @@
+{
+  "name": "vtip",
+  "version": "1.0.0",
+  "description": "A lightweight, Vue 3 specific rich text editor based on Tiptap",
+  "type": "module",
+  "main": "./dist/vtip.cjs",
+  "module": "./dist/vtip.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/vtip.js",
+      "require": "./dist/vtip.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "vue",
+    "vue3",
+    "tiptap",
+    "editor",
+    "wysiwyg"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@tiptap/extension-placeholder": "^3.18.0",
+    "@tiptap/starter-kit": "^3.18.0",
+    "@tiptap/vue-3": "^3.18.0",
+    "vue": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@vitejs/plugin-vue": "^5.0.0",
+    "typescript": "^5.0.0",
+    "vite": "^5.0.0",
+    "vite-plugin-dts": "^3.9.1",
+    "vue-tsc": "^2.0.0"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  }
+}
