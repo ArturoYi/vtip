@@ -12,7 +12,7 @@ import { TableHeader } from '@tiptap/extension-table-header'
 import { TableRow } from '@tiptap/extension-table-row'
 import { TableCell } from '@tiptap/extension-table-cell'
 import { Mathematics } from '@tiptap/extension-mathematics'
-import { all, createLowlight } from 'lowlight'
+import { common, createLowlight } from 'lowlight'
 import { Color, FontSize, TextStyle } from '@tiptap/extension-text-style';
 import { CharacterCount } from '@tiptap/extensions'
 import { InlineMathReplacer } from './extensions/InlineMathReplacer'
@@ -27,7 +27,7 @@ import { TaskItem, TaskList } from '@tiptap/extension-list';
 export const useVtip = (options: Partial<EditorOptions> = {}) => {
   const { extensions = [], ...otherOptions } = options
   // create a lowlight instance
-  const lowlight = createLowlight(all)
+  const lowlight = createLowlight(common)
 
   const editor = useEditor(
     {

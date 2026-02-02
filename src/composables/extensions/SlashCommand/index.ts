@@ -1,13 +1,13 @@
 import { Editor, Extension } from '@tiptap/vue-3'
-import Suggestion from '@tiptap/suggestion'
+import Suggestion, { SuggestionKeyDownProps, SuggestionProps } from '@tiptap/suggestion'
 import { EditorState, PluginKey } from '@tiptap/pm/state'
 import { VueRenderer } from '@tiptap/vue-3'
-import { computePosition, autoUpdate, flip, shift, offset } from '@floating-ui/dom'
+import { computePosition, autoUpdate, flip, shift, offset, Placement } from '@floating-ui/dom'
 import SlashCommandList from './SlashCommandList.vue'
-import { renderItems, CommandGroup } from './groups'
+import { defaultCommandGroups, CommandGroup } from './groups'
 import { SuggestionRange } from './suggestion'
 
-const SlashCommandPluginKey = new PluginKey('slashCommand')
+const extensionName = 'slashCommand'
 
 interface PopupState {
   element: HTMLElement | null;
@@ -23,7 +23,7 @@ const popup: PopupState = {
 
 
 export const SlashCommand = Extension.create({
-  name: SlashCommandPluginKey.get.name,
+  name: extensionName,
   priority: 200,
   onCreate() {
     // Create popup container
@@ -54,7 +54,7 @@ export const SlashCommand = Extension.create({
           // props is the item data (VtipToolBarCommands)
           // We need to delete the range (the slash command text) first
           editor.chain().focus().deleteRange(range).run();
-          
+
           // Then execute the item's onClick handler
           if (props.onClick) {
             props.onClick(editor);
@@ -68,23 +68,31 @@ export const SlashCommand = Extension.create({
     return [
       Suggestion({
         editor: this.editor,
-        pluginKey: SlashCommandPluginKey,
+        pluginKey: new PluginKey(extensionName),
         ...this.options.suggestion,
         items: ({ query }: { query: string }) => {
-          const groups = renderItems()
-          if (!query) return groups
+          const groups = defaultCommandGroups
+          if (!query) {
+            return groups.map(group => ({
+              ...group,
+              items: group.items.map(item => ({ ...item, isEnabled: true }))
+            }))
+          }
 
-          const filteredGroups: CommandGroup[] = []
+          const filteredGroups: any[] = []
 
           groups.forEach(group => {
-            const filteredItems = group.items.filter(item =>
-              item.name.toLowerCase().includes(query.toLowerCase()) ||
-              (item.description && item.description.toLowerCase().includes(query.toLowerCase()))
-            )
+            const filteredItems = group.items.filter(item => {
+              const nameMatch = item.name.toLowerCase().includes(query.toLowerCase())
+              const tooltipMatch = item.tooltip?.toLowerCase().includes(query.toLowerCase())
+              const descMatch = item.description && item.description.toLowerCase().includes(query.toLowerCase())
+              return nameMatch || tooltipMatch || descMatch
+            })
+
             if (filteredItems.length) {
               filteredGroups.push({
                 ...group,
-                items: filteredItems
+                items: filteredItems.map(item => ({ ...item, isEnabled: true }))
               })
             }
           })
@@ -93,64 +101,134 @@ export const SlashCommand = Extension.create({
         },
         render: () => {
           let component: VueRenderer
-          let popup: HTMLDivElement
-          let cleanup: () => void
+
+          let scrollHandler: (() => void) | null = null;
 
           return {
-            onStart: (props: any) => {
+            onStart: (props: SuggestionProps) => {
               component = new VueRenderer(SlashCommandList, {
                 props,
                 editor: props.editor,
               })
 
-              popup = document.createElement('div')
-              popup.style.position = 'absolute'
-              popup.style.zIndex = '9999'
-              popup.style.pointerEvents = 'auto'
-              // Prevent clicking on the popup from closing it immediately
-              popup.addEventListener('mousedown', (e) => e.preventDefault())
+              const { view } = props.editor;
 
-              document.body.appendChild(popup)
-              if (component.element) {
-                popup.appendChild(component.element)
+              if (popup.element && component.element) {
+                popup.element.appendChild(component.element);
+                popup.element.style.visibility = 'visible';
+                popup.element.style.pointerEvents = 'auto';
+                popup.isVisible = true;
+
+                const updatePosition = () => {
+                  if (!popup.element || !props.clientRect) return;
+
+                  const rect = props.clientRect();
+                  if (!rect) return;
+
+                  const referenceElement = {
+                    getBoundingClientRect: () => rect
+                  };
+
+                  computePosition(referenceElement, popup.element, {
+                    placement: 'bottom-start' as Placement,
+                    middleware: [
+                      offset({ mainAxis: 8, crossAxis: 16 }),
+                      flip({ fallbackPlacements: ['top-start', 'bottom-start'] })
+                    ]
+                  }).then(({ x, y }) => {
+                    if (popup.element) {
+                      popup.element.style.left = `${x}px`;
+                      popup.element.style.top = `${y}px`;
+                    }
+                  });
+                };
+
+                updatePosition();
+
+                // Set up auto-update for scroll events
+                if (props.clientRect) {
+                  const referenceElement = {
+                    getBoundingClientRect: () => props.clientRect?.() || new DOMRect()
+                  };
+                  popup.cleanup = autoUpdate(referenceElement, popup.element, updatePosition);
+                }
+
+                scrollHandler = updatePosition;
+                view.dom.parentElement?.addEventListener('scroll', scrollHandler);
               }
-
-              const virtualEl = {
-                getBoundingClientRect: props.clientRect,
-              }
-
-              cleanup = autoUpdate(virtualEl as any, popup, () => {
-                computePosition(virtualEl as any, popup, {
-                  placement: 'bottom-start',
-                  middleware: [offset(10), flip(), shift()]
-                }).then(({ x, y }) => {
-                  Object.assign(popup.style, {
-                    left: `${x}px`,
-                    top: `${y}px`,
-                  })
-                })
-              })
             },
 
-            onUpdate(props: any) {
+            onUpdate(props: SuggestionProps) {
               component.updateProps(props)
-              // No need to update position manually as autoUpdate handles it 
-              // and props.clientRect is a function that is called by autoUpdate via virtualEl
+              if (popup.element && popup.isVisible && props.clientRect) {
+                const rect = props.clientRect();
+                if (rect) {
+                  const referenceElement = {
+                    getBoundingClientRect: () => rect
+                  };
+
+                  computePosition(referenceElement, popup.element, {
+                    placement: 'bottom-start' as Placement,
+                    middleware: [
+                      offset({ mainAxis: 8, crossAxis: 16 }),
+                      flip({ fallbackPlacements: ['top-start', 'bottom-start'] })
+                    ]
+                  }).then(({ x, y }) => {
+                    if (popup.element) {
+                      popup.element.style.left = `${x}px`;
+                      popup.element.style.top = `${y}px`;
+                    }
+                  });
+
+                  // @ts-ignore
+                  props.editor.storage[extensionName].rect = rect;
+                }
+              }
             },
 
-            onKeyDown(props: any) {
+            onKeyDown(props: SuggestionKeyDownProps) {
               if (props.event.key === 'Escape') {
-                // logic to hide is handled by onExit which is called by Tiptap
-                return false
+                if (popup.element) {
+                  popup.element.style.visibility = 'hidden';
+                  popup.element.style.pointerEvents = 'none';
+                  popup.isVisible = false;
+                }
+                return true;
               }
 
-              return component.ref?.onKeyDown(props)
+              if (!popup.isVisible && popup.element) {
+                popup.element.style.visibility = 'visible';
+                popup.element.style.pointerEvents = 'auto';
+                popup.isVisible = true;
+              }
+
+              if (props.event.key === 'Enter') {
+                return component.ref?.onKeyDown(props) || false
+              }
+
+              return component.ref?.onKeyDown(props);
             },
 
-            onExit() {
-              if (cleanup) cleanup()
-              if (popup && popup.parentNode) popup.parentNode.removeChild(popup)
-              component.destroy()
+            onExit(props: SuggestionProps) {
+              if (popup.element) {
+                popup.element.style.visibility = 'hidden';
+                popup.element.style.pointerEvents = 'none';
+                popup.element.innerHTML = '';
+                popup.isVisible = false;
+              }
+
+              if (popup.cleanup) {
+                popup.cleanup();
+                popup.cleanup = null;
+              }
+
+              if (scrollHandler) {
+                const { view } = props.editor;
+                view.dom.parentElement?.removeEventListener('scroll', scrollHandler);
+                scrollHandler = null;
+              }
+
+              component.destroy();
             },
           }
         },
