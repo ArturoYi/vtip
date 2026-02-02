@@ -1,11 +1,13 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import dts from 'vite-plugin-dts'
+import WindiCSS from 'vite-plugin-windicss'
 import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [
     vue(),
+    WindiCSS(),
     dts({
       insertTypesEntry: true,
       cleanVueFileName: true,
@@ -19,10 +21,18 @@ export default defineConfig({
       formats: ['es', 'cjs']
     },
     rollupOptions: {
-      external: ['vue'],
+      external: [
+        'vue',
+        'reka-ui',
+        /^@tiptap\/.*/, // Externalize all tiptap packages if intended to be peer or user-installed.
+        // However, if we want them bundled (user prompt was ambiguous but "exclude node_modules" usually means externalize),
+        // we should list them. Given "vtip" wraps them, users might expect them included OR peer.
+        // Let's stick to the prompt "Exclude node_modules dependencies".
+      ],
       output: {
         globals: {
           vue: 'Vue',
+          'reka-ui': 'RekaUI'
         },
         exports: 'named',
       },

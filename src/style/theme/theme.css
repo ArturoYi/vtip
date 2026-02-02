@@ -1,0 +1,67 @@
+:root {
+  /* Default to dark theme variables */
+  --vtip-bg-color: #1a1a1a; /* Very dark gray background / 深灰色背景 */
+  --vtip-text-color: #e5e5e5; /* Light gray text / 浅灰色文字 */
+  --vtip-border-color: #404040; /* Dark gray border / 深灰色边框 */
+  --vtip-hover-bg: #2a2a2a; /* Slightly lighter dark gray for hover / 悬停时稍浅的深灰色 */
+  --vtip-active-bg: #404040; /* Dark gray for active state / 激活状态深灰色 */
+  --vtip-code-bg: #2d2d2d; /* Dark gray for code blocks / 代码块深灰色 */
+  --vtip-toolbar-bg: #262626; /* Dark gray for toolbar / 工具栏深灰色 */
+  --vtip-toolbar-border: #404040; /* Toolbar border color / 工具栏边框颜色 */
+}
+
+/* Explicit Dark Theme */
+[data-theme='dark'] {
+  --vtip-bg-color: #1a1a1a; /* Very dark gray background / 深灰色背景 */
+  --vtip-text-color: #e5e5e5; /* Light gray text / 浅灰色文字 */
+  --vtip-border-color: #404040; /* Dark gray border / 深灰色边框 */
+  --vtip-hover-bg: #2a2a2a; /* Slightly lighter dark gray for hover / 悬停时稍浅的深灰色 */
+  --vtip-active-bg: #404040; /* Dark gray for active state / 激活状态深灰色 */
+  --vtip-code-bg: #2d2d2d; /* Dark gray for code blocks / 代码块深灰色 */
+  --vtip-toolbar-bg: #262626; /* Dark gray for toolbar / 工具栏深灰色 */
+  --vtip-toolbar-border: #404040; /* Toolbar border color / 工具栏边框颜色 */
+}
+
+/* Light Theme */
+[data-theme='light'] {
+  --vtip-bg-color: #ffffff; /* White background / 白色背景 */
+  --vtip-text-color: #333333; /* Dark gray text / 深灰色文字 */
+  --vtip-border-color: #e0e0e0; /* Light gray border / 浅灰色边框 */
+  --vtip-hover-bg: #f5f5f5; /* Very light gray for hover / 悬停时极浅灰色 */
+  --vtip-active-bg: #e0e0e0; /* Light gray for active state / 激活状态浅灰色 */
+  --vtip-code-bg: #f5f5f5; /* Light gray for code blocks / 代码块浅灰色 */
+  --vtip-toolbar-bg: #ffffff; /* White for toolbar / 工具栏白色 */
+  --vtip-toolbar-border: #e0e0e0; /* Toolbar border color / 工具栏边框颜色 */
+}
+
+.vtip-editor {
+  background-color: var(--vtip-bg-color);
+  color: var(--vtip-text-color);
+  border-color: var(--vtip-border-color);
+}
+
+.vtip-editor .ProseMirror {
+  background-color: var(--vtip-bg-color);
+  color: var(--vtip-text-color);
+}
+
+/* Toolbar styles using variables */
+.tiptap-toolbar {
+  background-color: var(--vtip-toolbar-bg) !important;
+  border-bottom-color: var(--vtip-toolbar-border) !important;
+}
+
+.tiptap-toolbar button {
+  background-color: var(--vtip-toolbar-bg) !important;
+  border-color: var(--vtip-border-color) !important;
+  color: var(--vtip-text-color) !important;
+}
+
+.tiptap-toolbar button:hover {
+  background-color: var(--vtip-hover-bg) !important;
+}
+
+.tiptap-toolbar button.is-active {
+  background-color: var(--vtip-active-bg) !important;
+  color: var(--vtip-text-color) !important;
+}

@@ -1,0 +1,13 @@
+/* vtip base styles */
+@import './theme/theme.css';
+
+/* vtip table styles
+ * 全局共享基本样式
+ */
+.tiptap,
+.ProseMirror {
+  /* ProseMirror 必需的 white-space 属性 */
+  white-space: pre-wrap;
+  margin-inline: auto;
+  outline: none;
+}
