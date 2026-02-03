@@ -73,12 +73,11 @@
     "@vitejs/plugin-vue": "^6.0.3",
     "reka-ui": "^2.8.0",
     "typescript": "^5.0.0",
+    "unocss": "^66.6.0",
     "vite": "^7.3.1",
     "vite-plugin-dts": "^4.5.4",
-    "vite-plugin-windicss": "^1.9.4",
     "vue": "^3.5.27",
-    "vue-tsc": "^2.0.0",
-    "windicss": "^3.5.6"
+    "vue-tsc": "^2.0.0"
   },
   "peerDependencies": {
     "reka-ui": "^2.8.0",

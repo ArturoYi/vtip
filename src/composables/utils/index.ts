@@ -1,6 +1,16 @@
 import type { Node } from '@tiptap/pm/model';
 import { Decoration, DecorationSet, type EditorView } from '@tiptap/pm/view';
 
+export const browser = typeof window !== 'undefined'
+
+/**
+ * Check if the current browser is in mac or not
+ */
+export const isMac = browser
+    ? navigator.userAgent.includes('Macintosh') || navigator.userAgent.includes('Mac OS X')
+    : false
+
+
 export const findColors = (doc: Node) => {
     const hexColor = /(#[0-9a-f]{3,6})\b/gi;
     const decorations: Decoration[] = [];

@@ -1,3 +1,4 @@
+import 'virtual:uno.css'
 import { useVtip } from './composables/useVtip'
 import './style/index.css'
 import EditorToolbar from './components/toolbar/EditorToolbar.vue'

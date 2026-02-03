@@ -10,7 +10,7 @@ const props = defineProps<{
 
 const selectedGroupIndex = ref(0)
 const selectedCommandIndex = ref(0)
-const commandListContainer = ref<HTMLDivElement | null>(null)
+const commandListContainer = ref<HTMLElement | null>(null)
 
 const selectItem = (groupIndex: number, commandIndex: number) => {
   const item = props.items[groupIndex]?.items[commandIndex]
@@ -20,42 +20,42 @@ const selectItem = (groupIndex: number, commandIndex: number) => {
 }
 
 const updateSelection = (groupIndex: number, commandIndex: number) => {
-    selectedGroupIndex.value = groupIndex
-    selectedCommandIndex.value = commandIndex
+  selectedGroupIndex.value = groupIndex
+  selectedCommandIndex.value = commandIndex
 }
 
 const upHandler = () => {
-    if (!props.items.length) return
+  if (!props.items.length) return
 
-    let newGroupIndex = selectedGroupIndex.value
-    let newCommandIndex = selectedCommandIndex.value - 1
+  let newGroupIndex = selectedGroupIndex.value
+  let newCommandIndex = selectedCommandIndex.value - 1
 
-    if (newCommandIndex < 0) {
-        newGroupIndex = newGroupIndex - 1
-        if (newGroupIndex < 0) {
-            newGroupIndex = props.items.length - 1
-        }
-        newCommandIndex = props.items[newGroupIndex].items.length - 1
+  if (newCommandIndex < 0) {
+    newGroupIndex = newGroupIndex - 1
+    if (newGroupIndex < 0) {
+      newGroupIndex = props.items.length - 1
     }
+    newCommandIndex = props.items[newGroupIndex].items.length - 1
+  }
 
-    updateSelection(newGroupIndex, newCommandIndex)
+  updateSelection(newGroupIndex, newCommandIndex)
 }
 
 const downHandler = () => {
-    if (!props.items.length) return
+  if (!props.items.length) return
 
-    let newGroupIndex = selectedGroupIndex.value
-    let newCommandIndex = selectedCommandIndex.value + 1
+  let newGroupIndex = selectedGroupIndex.value
+  let newCommandIndex = selectedCommandIndex.value + 1
 
-    if (newCommandIndex >= props.items[newGroupIndex].items.length) {
-        newGroupIndex = newGroupIndex + 1
-        if (newGroupIndex >= props.items.length) {
-            newGroupIndex = 0
-        }
-        newCommandIndex = 0
+  if (newCommandIndex >= props.items[newGroupIndex].items.length) {
+    newGroupIndex = newGroupIndex + 1
+    if (newGroupIndex >= props.items.length) {
+      newGroupIndex = 0
     }
+    newCommandIndex = 0
+  }
 
-    updateSelection(newGroupIndex, newCommandIndex)
+  updateSelection(newGroupIndex, newCommandIndex)
 }
 
 const enterHandler = () => {
@@ -64,18 +64,18 @@ const enterHandler = () => {
 
 const scrollToSelected = () => {
   nextTick(() => {
-    if (!commandListContainer.value) return
-    
-    const selectedItem = commandListContainer.value.querySelector(`#slash-command-${selectedGroupIndex.value}-${selectedCommandIndex.value}`) as HTMLElement
+    const container = commandListContainer.value
+    if (!container) return
+
+    const selectedItem = container.querySelector(`#slash-command-${selectedGroupIndex.value}-${selectedCommandIndex.value}`) as HTMLElement
     if (selectedItem) {
-      const container = commandListContainer.value
       const itemTop = selectedItem.offsetTop
       const itemBottom = itemTop + selectedItem.offsetHeight
       const containerScrollTop = container.scrollTop
       const containerHeight = container.clientHeight
 
       if (itemTop < containerScrollTop) {
-        container.scrollTop = itemTop - 5 
+        container.scrollTop = itemTop - 5
       } else if (itemBottom > containerScrollTop + containerHeight) {
         container.scrollTop = itemBottom - containerHeight + 5
       }
@@ -90,7 +90,7 @@ watch([selectedGroupIndex, selectedCommandIndex], () => {
 watch(() => props.items, () => {
   selectedGroupIndex.value = 0
   selectedCommandIndex.value = 0
-})
+}, { immediate: true })
 
 defineExpose({
   onKeyDown: ({ event }: { event: KeyboardEvent }) => {
@@ -112,28 +112,25 @@ defineExpose({
 </script>
 
 <template>
-  <div class="slash-command-menu" ref="commandListContainer">
-    <div v-if="items.length" class="menu-content">
-        <template v-for="(group, groupIndex) in items" :key="groupIndex">
-            <div v-if="group.title" class="menu-group-title">{{ group.title }}</div>
-            <button
-                v-for="(item, itemIndex) in group.items"
-                :key="itemIndex"
-                :id="`slash-command-${groupIndex}-${itemIndex}`"
-                class="menu-item"
-                :class="{ 'is-selected': groupIndex === selectedGroupIndex && itemIndex === selectedCommandIndex }"
-                @click="selectItem(groupIndex, itemIndex)"
-            >
-                <div class="menu-item-content">
-                    <div class="menu-item-title">{{ item.name }}</div>
-                    <div class="menu-item-description">{{ item.description }}</div>
-                </div>
-            </button>
-        </template>
+  <div v-if="items.length" max-h-80 ref="commandListContainer">
+    <div class="menu-content">
+      <div v-for="(group, groupIndex) in items" :key="groupIndex" class="menu-group">
+        <div v-if="group.title" class="menu-group-title">{{ group.title }}</div>
+        <button v-for="(item, itemIndex) in group.items" :key="itemIndex"
+          :id="`slash-command-${groupIndex}-${itemIndex}`" class="menu-item"
+          :data-state="groupIndex === selectedGroupIndex && itemIndex === selectedCommandIndex ? 'checked' : 'unchecked'"
+          @click="selectItem(groupIndex, itemIndex)">
+          <div class="menu-item-content">
+            <component :is="item.icon" class="menu-item-icon" />
+            <div class="menu-item-title">{{ item.name }}</div>
+            <div class="menu-item-description">{{ item.description }}</div>
+          </div>
+        </button>
+      </div>
     </div>
-    <div v-else class="menu-empty">
-      No result
-    </div>
+  </div>
+  <div v-else class="menu-empty">
+    No result
   </div>
 </template>
 
@@ -145,18 +142,18 @@ defineExpose({
   border-radius: 0.5rem;
   overflow: hidden;
   padding: 0.25rem;
-  min-width: 280px;
-  max-height: 300px;
+  width: 200px;
+  max-height: 20rem;
   overflow-y: auto;
 }
 
 .menu-group-title {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #6b7280;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .menu-item {
@@ -170,6 +167,7 @@ defineExpose({
   border-radius: 0.25rem;
   color: #374151;
   transition: background-color 0.1s ease;
+  appearance: none;
 }
 
 .menu-item:hover {
@@ -177,31 +175,32 @@ defineExpose({
   color: #111827;
 }
 
-.menu-item.is-selected {
+/* Simulate reka-ui data-state="checked" */
+.menu-item[data-state='checked'] {
   background-color: #f3f4f6;
   color: #111827;
 }
 
 .menu-item-content {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .menu-item-title {
-    font-size: 0.875rem;
-    font-weight: 500;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
 .menu-item-description {
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin-top: 0.125rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.125rem;
 }
 
 .menu-empty {
-    padding: 0.75rem;
-    text-align: center;
-    color: #6b7280;
-    font-size: 0.875rem;
+  padding: 0.75rem;
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.875rem;
 }
 </style>

@@ -1,10 +1,10 @@
 import type { Editor } from '@tiptap/vue-3';
-import type { Icon } from 'lucide-vue-next';
+import type { LucideIcon } from 'lucide-vue-next';
 import type { Node } from '@tiptap/pm/model';
 
 export interface VtipToolBarCommands {
 	name: string;
-	icon?: any;
+	icon?: LucideIcon;
 	tooltip?: string;
 	description?: string;
 	shortCut?: string;
