@@ -1,5 +1,6 @@
 /* vtip base styles */
 @import './theme/theme.css';
+@import './highlight.css';
 
 /* vtip table styles
  * 全局共享基本样式

@@ -112,95 +112,47 @@ defineExpose({
 </script>
 
 <template>
-  <div v-if="items.length" max-h-80 ref="commandListContainer">
+  <div v-if="items.length" ref="commandListContainer"
+    class="shadow-lg max-h-80 rounded-md overflow-hidden overflow-y-auto w-50 bg-[var(--vtip-slash-menu-bg)] border border-[var(--vtip-slash-menu-border)]">
     <div class="menu-content">
       <div v-for="(group, groupIndex) in items" :key="groupIndex" class="menu-group">
-        <div v-if="group.title" class="menu-group-title">{{ group.title }}</div>
+        <div v-if="group.title" class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[var(--vtip-slash-group-title)]">{{
+          group.title }}</div>
         <button v-for="(item, itemIndex) in group.items" :key="itemIndex"
-          :id="`slash-command-${groupIndex}-${itemIndex}`" class="menu-item"
+          :id="`slash-command-${groupIndex}-${itemIndex}`"
+          class="flex w-full text-left bg-transparent border-none px-3 py-2 cursor-pointer rounded transition-colors duration-100 ease appearance-none text-[var(--vtip-slash-item-text)] hover:bg-[var(--vtip-slash-item-bg-hover)] hover:text-[var(--vtip-slash-item-text-hover)] data-[state=checked]:bg-[var(--vtip-slash-item-bg-hover)] data-[state=checked]:text-[var(--vtip-slash-item-text-hover)]"
           :data-state="groupIndex === selectedGroupIndex && itemIndex === selectedCommandIndex ? 'checked' : 'unchecked'"
           @click="selectItem(groupIndex, itemIndex)">
-          <div class="menu-item-content">
-            <component :is="item.icon" class="menu-item-icon" />
-            <div class="menu-item-title">{{ item.name }}</div>
-            <div class="menu-item-description">{{ item.description }}</div>
+          <div class="flex flex-row items-center">
+            <component :is="item.icon" class="mr-3" />
+            <div class="menu-item-title text-sm font-medium">{{ item.name }}</div>
           </div>
         </button>
       </div>
     </div>
   </div>
-  <div v-else class="menu-empty">
+  <div v-else class="p-3 text-center text-sm text-[var(--vtip-slash-empty-text)]">
     No result
   </div>
 </template>
 
 <style scoped>
-.slash-command-menu {
-  background: white;
-  border: 1px solid #ddd;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  border-radius: 0.5rem;
-  overflow: hidden;
-  padding: 0.25rem;
-  width: 200px;
-  max-height: 20rem;
-  overflow-y: auto;
+/* Custom Scrollbar */
+div::-webkit-scrollbar {
+  width: 0.6rem;
+  height: 0.6rem;
 }
 
-.menu-group-title {
-  padding: 0.5rem 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+div::-webkit-scrollbar-track {
+  background: var(--vtip-scrollbar-track);
 }
 
-.menu-item {
-  display: flex;
-  width: 100%;
-  text-align: left;
-  background: transparent;
-  border: none;
-  padding: 0.5rem 0.75rem;
-  cursor: pointer;
-  border-radius: 0.25rem;
-  color: #374151;
-  transition: background-color 0.1s ease;
-  appearance: none;
+div::-webkit-scrollbar-thumb {
+  background: var(--vtip-scrollbar-thumb);
+  border-radius: 0.3rem;
 }
 
-.menu-item:hover {
-  background-color: #f3f4f6;
-  color: #111827;
-}
-
-/* Simulate reka-ui data-state="checked" */
-.menu-item[data-state='checked'] {
-  background-color: #f3f4f6;
-  color: #111827;
-}
-
-.menu-item-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.menu-item-title {
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.menu-item-description {
-  font-size: 0.75rem;
-  color: #6b7280;
-  margin-top: 0.125rem;
-}
-
-.menu-empty {
-  padding: 0.75rem;
-  text-align: center;
-  color: #6b7280;
-  font-size: 0.875rem;
+div::-webkit-scrollbar-thumb:hover {
+  background: var(--vtip-scrollbar-thumb-hover);
 }
 </style>
