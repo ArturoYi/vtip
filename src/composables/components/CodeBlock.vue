@@ -1,8 +1,21 @@
 <script setup lang="ts">
 import type { NodeViewProps } from '@tiptap/vue-3';
 import { NodeViewWrapper, NodeViewContent } from '@tiptap/vue-3';
-import { computed, ref, watch } from 'vue';
-import { Copy, Check, ChevronDown } from 'lucide-vue-next';
+import { computed, ref } from 'vue';
+import { Copy, Check, ChevronDown, Search, } from 'lucide-vue-next';
+import {
+  ComboboxRoot,
+  ComboboxInput,
+  ComboboxTrigger,
+  ComboboxContent,
+  ComboboxViewport,
+  ComboboxItem,
+  ComboboxItemIndicator,
+  ComboboxEmpty,
+  ComboboxGroup,
+  ComboboxPortal,
+  ComboboxAnchor, // Add ComboboxAnchor
+} from 'reka-ui'
 
 const { node, extension, updateAttributes } = defineProps<NodeViewProps>();
 
@@ -11,7 +24,7 @@ const defaultLanguage = computed({
   set: (language: string) => updateAttributes({ language }),
 });
 
-const preRef = ref<HTMLPreElement>();
+const preRef = ref<HTMLElement>();
 const isCopying = ref(false);
 
 const languages = computed<Array<string>>(() => {
@@ -31,25 +44,65 @@ function copyCode() {
 
 <template>
   <NodeViewWrapper
-    class="code-wrapper group rounded-lg overflow-hidden my-4 bg-[var(--vtip-code-bg)] text-[var(--vtip-code-text)]"
-    :draggable="false" :spellcheck="false">
+    class="code-wrapper group rounded-lg overflow-hidden my-4 bg-[var(--vtip-code-bg)] text-[var(--vtip-code-text)] border border-border"
+    :draggable="false" :spellcheck="false" contenteditable="false">
     <!-- Toolbar -->
     <div contenteditable="false"
-      class="flex items-center justify-between px-3 py-1.5 bg-[var(--vtip-code-toolbar-bg)] text-[var(--vtip-code-toolbar-text)] text-xs select-none">
+      class="vtip-code-toolbar flex items-center justify-between px-3 py-1.5 bg-[var(--vtip-code-toolbar-bg)] text-[var(--vtip-code-toolbar-text)] text-xs select-none border-b border-border">
+
       <!-- Language Selector -->
-      <div class="relative group/lang">
-        <select v-model="defaultLanguage"
-          class="appearance-none bg-transparent border-none cursor-pointer pr-4 focus:outline-none hover:text-[var(--vtip-code-toolbar-hover)] transition-colors">
-          <option value="plaintext">Auto</option>
-          <option v-for="(lang, index) in languages" :key="index" :value="lang">
-            {{ lang }}
-          </option>
-        </select>
-        <ChevronDown class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 pointer-events-none opacity-50" />
-      </div>
+      <ComboboxRoot v-model="defaultLanguage" class="relative">
+        <ComboboxAnchor>
+          <ComboboxTrigger
+            class="flex items-center gap-1 hover:text-[var(--vtip-code-toolbar-hover)] transition-colors focus:outline-none cursor-pointer">
+            <span>{{ defaultLanguage === 'plaintext' ? 'Auto' : defaultLanguage }}</span>
+            <ChevronDown class="w-3 h-3 opacity-50" />
+          </ComboboxTrigger>
+        </ComboboxAnchor>
+
+        <ComboboxPortal>
+          <ComboboxContent
+            class="z-[9999] min-w-[150px] bg-white dark:bg-zinc-800 text-sm text-zinc-900 dark:text-zinc-100 rounded-md border border-zinc-200 dark:border-zinc-700 shadow-lg outline-none mt-1 max-h-[300px] flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95"
+            :side-offset="5" position="popper" align="start">
+            <!-- Fixed Search Input -->
+            <div
+              class="flex items-center border-b border-zinc-200 dark:border-zinc-700 px-3 py-2 bg-white dark:bg-zinc-800 z-10 sticky top-0">
+              <Search class="mr-2 h-3.5 w-3.5 shrink-0 opacity-50" />
+              <ComboboxInput
+                class="flex h-4 w-full rounded-md bg-transparent text-xs outline-none placeholder:text-zinc-500 dark:placeholder:text-zinc-400 disabled:cursor-not-allowed disabled:opacity-50"
+                placeholder="Search language..." autoFocus />
+            </div>
+
+            <!-- Scrollable List -->
+            <ComboboxViewport class="p-1 overflow-y-auto">
+              <ComboboxEmpty class="py-2 text-center text-xs text-zinc-500 dark:text-zinc-400">
+                No language found.
+              </ComboboxEmpty>
+
+              <ComboboxGroup>
+                <ComboboxItem value="plaintext"
+                  class="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-xs outline-none data-[highlighted]:bg-zinc-100 dark:data-[highlighted]:bg-zinc-700 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 transition-colors">
+                  <ComboboxItemIndicator class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+                    <CheckIcon class="h-3 w-3" />
+                  </ComboboxItemIndicator>
+                  <span class="pl-6">Auto</span>
+                </ComboboxItem>
+
+                <ComboboxItem v-for="lang in languages" :key="lang" :value="lang"
+                  class="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-xs outline-none data-[highlighted]:bg-zinc-100 dark:data-[highlighted]:bg-zinc-700 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 transition-colors">
+                  <ComboboxItemIndicator class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+                    <CheckIcon class="h-3 w-3" />
+                  </ComboboxItemIndicator>
+                  <span class="pl-6">{{ lang }}</span>
+                </ComboboxItem>
+              </ComboboxGroup>
+            </ComboboxViewport>
+          </ComboboxContent>
+        </ComboboxPortal>
+      </ComboboxRoot>
 
       <!-- Copy Button -->
-      <button @click="copyCode"
+      <button contenteditable="false" @click="copyCode"
         class="flex items-center gap-1 cursor-pointer hover:text-[var(--vtip-code-toolbar-hover)] transition-colors focus:outline-none"
         :title="isCopying ? 'Copied!' : 'Copy code'">
         <span v-if="isCopying" class="flex items-center gap-1">
@@ -64,15 +117,13 @@ function copyCode() {
     </div>
 
     <!-- Code Content -->
-    <pre ref="preRef" :draggable="false"
-      class="p-4 m-0 overflow-x-auto font-mono text-sm leading-relaxed !bg-transparent"><NodeViewContent as="code" :class="`language-${defaultLanguage}`" v-bind="node.attrs" /></pre>
+    <pre ref="preRef" contenteditable="true"
+      class="p-4 m-0 overflow-x-auto font-mono text-sm leading-relaxed !bg-transparent"><NodeViewContent as="code" :class="`language-${defaultLanguage}`" /></pre>
   </NodeViewWrapper>
 </template>
 
 <style scoped>
-/* Scoped styles are mostly replaced by utility classes, but keeping for reference if needed */
 .code-wrapper {
-  /* Ensuring wrapper takes full width available */
   width: 100%;
 }
 </style>
