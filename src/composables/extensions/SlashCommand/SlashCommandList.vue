@@ -113,7 +113,7 @@ defineExpose({
 
 <template>
   <div v-if="items.length" ref="commandListContainer"
-    class="shadow-lg max-h-80 rounded-md overflow-hidden overflow-y-auto w-50 bg-[var(--vtip-slash-menu-bg)] border border-[var(--vtip-slash-menu-border)]">
+    class="shadow-lg max-h-80 rounded-md overflow-hidden overflow-y-auto w-50 bg-[var(--vtip-slash-menu-bg)] border border-[var(--vtip-slash-menu-border)] vtip-scrollbar">
     <div class="menu-content">
       <div v-for="(group, groupIndex) in items" :key="groupIndex" class="menu-group">
         <div v-if="group.title" class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[var(--vtip-slash-group-title)]">{{
@@ -135,24 +135,3 @@ defineExpose({
     No result
   </div>
 </template>
-
-<style scoped>
-/* Custom Scrollbar */
-div::-webkit-scrollbar {
-  width: 0.6rem;
-  height: 0.6rem;
-}
-
-div::-webkit-scrollbar-track {
-  background: var(--vtip-scrollbar-track);
-}
-
-div::-webkit-scrollbar-thumb {
-  background: var(--vtip-scrollbar-thumb);
-  border-radius: 0.3rem;
-}
-
-div::-webkit-scrollbar-thumb:hover {
-  background: var(--vtip-scrollbar-thumb-hover);
-}
-</style>

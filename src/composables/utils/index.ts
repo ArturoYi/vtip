@@ -1,5 +1,6 @@
 import type { Node } from '@tiptap/pm/model';
 import { Decoration, DecorationSet, type EditorView } from '@tiptap/pm/view';
+import { Editor } from '@tiptap/vue-3';
 
 export const browser = typeof window !== 'undefined'
 
@@ -36,3 +37,30 @@ export const findColors = (doc: Node) => {
 
     return DecorationSet.create(doc, decorations);
 };
+
+/**
+ * Dupilcate content at the current selection
+ * @param editor Editor instance
+ * @param node Node to be duplicated
+ */
+export const duplicateContent = (editor: Editor, node: Node) => {
+    const { view } = editor;
+    const { state } = view;
+    const { selection } = state;
+
+    editor
+        .chain()
+        .insertContentAt(selection.to, node.toJSON(), {
+            updateSelection: true
+        })
+        .focus(selection.to)
+        .run();
+};
+
+export enum FileType {
+	IMAGE = 'image/*',
+	VIDEO = 'video/*',
+	AUDIO = 'audio/*',
+	DOCS = 'docs/*',
+	UNKNOWN = 'unknown'
+}

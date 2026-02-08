@@ -5,7 +5,7 @@ import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
 import EditorToolbar from './components/toolbar/EditorToolbar.vue'
 
-const content = ref('<p>Hello <b>Tiptap</b>!</p>')
+const content = ref('<p>Hello <strong>Tiptap</strong>!</p><p></p><pre><code></code></pre><p></p>')
 
 const editor = useVtip({
   content: content.value,

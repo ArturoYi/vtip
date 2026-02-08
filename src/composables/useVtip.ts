@@ -22,6 +22,11 @@ import { ColorHighlighter } from './extensions/ColorHighlighter'
 import { AutoJoiner } from './extensions/AutoJoiner'
 import { SlashCommand } from './extensions/SlashCommand'
 import { TaskItem, TaskList } from '@tiptap/extension-list';
+import { ImageExtended } from './extensions/image/ImageExtended'
+import ImageExtendedComponent from './components/ImageExtended.vue'
+import ImagePlaceholderComponent from './components/ImagePlaceholder.vue'
+import { ImagePlaceholder } from './extensions/image/ImagePlaceholder'
+import { FileDrop } from './extensions/HandleFileDrop'
 
 
 export const useVtip = (options: Partial<EditorOptions> = {}) => {
@@ -108,7 +113,14 @@ export const useVtip = (options: Partial<EditorOptions> = {}) => {
             return VueNodeViewRenderer(CodeBlock);
           }
         }),
-        
+        ImageExtended(ImageExtendedComponent),
+        ImagePlaceholder(ImagePlaceholderComponent),
+				FileDrop.configure({
+          // 本地上传文件
+          localFileGetter: async (fileType) => {
+            return "https://placehold.co/600x400";
+          }
+        }), // 文件上传
         SlashCommand,// 斜杠命令
         //-------------------自定义扩展----------------------
         ...extensions,
@@ -118,4 +130,3 @@ export const useVtip = (options: Partial<EditorOptions> = {}) => {
 
   return editor
 }
-

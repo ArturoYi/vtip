@@ -12,3 +12,26 @@
   margin-inline: auto;
   outline: none;
 }
+
+.vtip-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--vtip-scrollbar-thumb) var(--vtip-scrollbar-track);
+}
+
+.vtip-scrollbar::-webkit-scrollbar {
+  width: 0.6rem;
+  height: 0.6rem;
+}
+
+.vtip-scrollbar::-webkit-scrollbar-track {
+  background: var(--vtip-scrollbar-track);
+}
+
+.vtip-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--vtip-scrollbar-thumb);
+  border-radius: 0.3rem;
+}
+
+.vtip-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--vtip-scrollbar-thumb-hover);
+}

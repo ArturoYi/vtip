@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { NodeViewProps } from '@tiptap/vue-3';
 import { NodeViewWrapper, NodeViewContent } from '@tiptap/vue-3';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { Copy, Check, ChevronDown, Search } from 'lucide-vue-next';
 import {
   PopoverRoot,
@@ -9,33 +9,59 @@ import {
   PopoverContent,
   PopoverPortal,
   PopoverAnchor,
-  ComboboxRoot,
-  ComboboxInput,
-  ComboboxContent,
-  ComboboxViewport,
-  ComboboxItem,
-  ComboboxItemIndicator,
-  ComboboxEmpty,
-  ComboboxGroup,
+  ListboxRoot,
+  ListboxContent,
+  ListboxItem,
 } from 'reka-ui'
 
 const { node, extension, updateAttributes } = defineProps<NodeViewProps>();
+const popoverOpen = ref(false)
 
 const defaultLanguage = computed({
   get: () => node.attrs.language || 'plaintext',
-  set: (language: string) => updateAttributes({ language }),
+  set: (language: string) => {
+    updateAttributes({ language });
+  },
 });
 
-const preRef = ref<HTMLElement>();
+const searchValue = ref<string>('')
+watch(popoverOpen, (open) => {
+  if (!open) {
+    searchValue.value = ''
+  }
+})
+
 const isCopying = ref(false);
 
 const languages = computed<Array<string>>(() => {
-  return extension.options.lowlight.listLanguages().sort()
+  const sortedLanguages = extension.options.lowlight.listLanguages().sort()
+  const currentLanguage = defaultLanguage.value
+  if (currentLanguage && sortedLanguages.includes(currentLanguage)) {
+    return [currentLanguage, ...sortedLanguages.filter((lang: string) => lang !== currentLanguage)]
+  }
+  return sortedLanguages
 });
 
+/**
+ * 过滤后的语言列表
+ */
+const filteredLanguages = computed<Array<string>>(() => {
+  const query = searchValue.value.trim().toLowerCase()
+  if (!query) return languages.value
+  return languages.value.filter((lang: string) => lang.toLowerCase().includes(query))
+})
+
+const updateLanguage = (language: unknown) => {
+  if (typeof language !== 'string' || language === defaultLanguage.value) {
+    return
+  }
+  defaultLanguage.value = language
+}
+
+
+
 function copyCode() {
-  if (!preRef.value) return
-  const code = preRef.value.textContent || ''
+  const code = node.textContent || ''
   navigator.clipboard.writeText(code)
   isCopying.value = true
   setTimeout(() => {
@@ -46,91 +72,66 @@ function copyCode() {
 
 <template>
   <NodeViewWrapper
-    class="code-wrapper group rounded-lg overflow-hidden my-4 bg-[var(--vtip-code-bg)] text-[var(--vtip-code-text)] border border-border"
+    class="w-full group rounded-lg overflow-hidden my-4 bg-[var(--vtip-code-bg)] text-[var(--vtip-code-text)] border border-border"
     :draggable="false" :spellcheck="false">
     <!-- Toolbar -->
     <div contenteditable="false"
-      class="vtip-code-toolbar flex items-center justify-end px-3 py-1.5 bg-[var(--vtip-code-toolbar-bg)] text-[var(--vtip-code-toolbar-text)] text-xs select-none border-b border-border">
-
+      class="flex items-center justify-end gap-4 px-4 py-1.5 bg-[var(--vtip-code-toolbar-bg)] text-[var(--vtip-code-toolbar-text)] text-xs select-none border-b border-border">
       <!-- Language Selector -->
-      <PopoverRoot>
+      <PopoverRoot v-model:open="popoverOpen">
         <PopoverAnchor>
           <PopoverTrigger contenteditable="false"
-            class="flex items-center gap-1 hover:text-[var(--vtip-code-toolbar-hover)] transition-colors focus:outline-none cursor-pointer">
-            <span>{{ defaultLanguage === 'plaintext' ? 'Auto' : defaultLanguage }}</span>
+            class="flex items-center gap-1 hover:text-[var(--vtip-code-toolbar-hover)] border-none transition-colors cursor-pointer rounded-1 focus:outline-none">
+            <span>{{ defaultLanguage }}</span>
             <ChevronDown class="w-3 h-3 opacity-50" />
           </PopoverTrigger>
         </PopoverAnchor>
 
         <PopoverPortal>
           <PopoverContent contenteditable="false"
-            class="z-[9999] min-w-[150px] bg-white dark:bg-zinc-800 text-sm text-zinc-900 dark:text-zinc-100 rounded-md border border-zinc-200 dark:border-zinc-700 shadow-lg outline-none mt-1 p-0 flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95"
-            :side-offset="5" position="popper" align="start" @openAutoFocus="(e: Event) => e.preventDefault()"
+            class="z-[99] w-50 rounded-md border shadow-lg outline-none mt-1 p-0 flex flex-col overflow-hidden animate-in fade-in-0 zoom-in-95 bg-[var(--vtip-code-lang-menu-bg)] border-[var(--vtip-code-lang-menu-border)] text-[var(--vtip-code-lang-item-text)]"
+            :side-offset="5" position="popper" @openAutoFocus="(e: Event) => e.preventDefault()"
             @closeAutoFocus="(e: Event) => e.preventDefault()">
-
-            <ComboboxRoot v-model="defaultLanguage" class="flex flex-col w-full">
-              <!-- Search Input -->
-              <div class="flex items-center border-b border-zinc-200 dark:border-zinc-700 px-3 py-2">
-                <Search class="mr-2 h-3.5 w-3.5 shrink-0 opacity-50" />
-                <ComboboxInput
-                  class="flex h-4 w-full rounded-md bg-transparent text-xs outline-none placeholder:text-zinc-500 dark:placeholder:text-zinc-400 disabled:cursor-not-allowed disabled:opacity-50"
-                  placeholder="Search language..." autoFocus />
-              </div>
-
-              <!-- List -->
-              <ComboboxContent class="max-h-[300px] overflow-y-auto p-1">
-                <ComboboxViewport>
-                  <ComboboxEmpty class="py-2 text-center text-xs text-zinc-500 dark:text-zinc-400">
-                    No language found.
-                  </ComboboxEmpty>
-
-                  <ComboboxGroup>
-                    <ComboboxItem value="plaintext"
-                      class="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-xs outline-none data-[highlighted]:bg-zinc-100 dark:data-[highlighted]:bg-zinc-700 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 transition-colors">
-                      <ComboboxItemIndicator class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-                        <Check class="h-3 w-3" />
-                      </ComboboxItemIndicator>
-                      <span class="pl-6">Auto</span>
-                    </ComboboxItem>
-
-                    <ComboboxItem v-for="lang in languages" :key="lang" :value="lang"
-                      class="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-xs outline-none data-[highlighted]:bg-zinc-100 dark:data-[highlighted]:bg-zinc-700 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 transition-colors">
-                      <ComboboxItemIndicator class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-                        <Check class="h-3 w-3" />
-                      </ComboboxItemIndicator>
-                      <span class="pl-6">{{ lang }}</span>
-                    </ComboboxItem>
-                  </ComboboxGroup>
-                </ComboboxViewport>
-              </ComboboxContent>
-            </ComboboxRoot>
+            <div class="flex items-center border-b px-3 py-2 border-[var(--vtip-code-lang-menu-border)]">
+              <Search class="mr-2 h-3.5 w-3.5 shrink-0 text-[var(--vtip-code-lang-search-icon)]" />
+              <input v-model="searchValue" contenteditable="false"
+                class="flex h-6 w-full rounded-md bg-transparent text-sm outline-none border-none appearance-none truncate text-[var(--vtip-code-lang-search-text)] placeholder:text-[var(--vtip-code-lang-search-placeholder)] disabled:cursor-not-allowed disabled:opacity-50"
+                placeholder="Search language..." type="text" />
+            </div>
+            <ListboxRoot :model-value="defaultLanguage" class="flex flex-col rounded-lg"
+              @update:model-value="updateLanguage">
+              <ListboxContent class="p-[5px] max-h-72 overflow-auto overflow-x-hidden vtip-scrollbar">
+                <div v-if="!filteredLanguages.length"
+                  class="p-3 text-center text-xs text-[var(--vtip-code-lang-search-placeholder)]">
+                  No result
+                </div>
+                <ListboxItem v-for="lang in filteredLanguages" :key="lang" :value="lang"
+                  class="flex w-full min-w-0 items-center text-left bg-transparent border-none px-3 py-2 cursor-pointer rounded transition-colors duration-100 ease appearance-none overflow-hidden text-[var(--vtip-code-lang-item-text)] hover:bg-[var(--vtip-code-lang-item-bg-hover)] hover:text-[var(--vtip-code-lang-item-text-hover)] data-[state=checked]:bg-[var(--vtip-code-lang-item-bg-hover)] data-[state=checked]:text-[var(--vtip-code-lang-item-text-hover)]">
+                  <span class="mr-2 flex h-3.5 w-3.5 shrink-0 items-center justify-center">
+                    <Check v-if="lang === defaultLanguage" class="h-3.5 w-3.5" />
+                  </span>
+                  <span class="truncate">{{ lang }}</span>
+                </ListboxItem>
+              </ListboxContent>
+            </ListboxRoot>
           </PopoverContent>
         </PopoverPortal>
       </PopoverRoot>
 
       <!-- Copy Button -->
       <button contenteditable="false" @click="copyCode"
-        class="flex items-center gap-1 cursor-pointer hover:text-[var(--vtip-code-toolbar-hover)] transition-colors focus:outline-none"
+        class="flex items-center gap-1 cursor-pointer hover:text-[var(--vtip-code-toolbar-hover)] transition-colors focus:outline-none border-none rounded-1"
         :title="isCopying ? 'Copied!' : 'Copy code'">
         <span v-if="isCopying" class="flex items-center gap-1">
           <Check class="w-3.5 h-3.5" />
-          <span>Copied</span>
         </span>
         <span v-else class="flex items-center gap-1">
           <Copy class="w-3.5 h-3.5" />
-          <span>Copy</span>
         </span>
       </button>
     </div>
 
     <NodeViewContent as="pre"
       :class="`language-${defaultLanguage} p-4 m-0 overflow-x-auto font-mono text-sm leading-relaxed !bg-transparent`" />
-
   </NodeViewWrapper>
 </template>
-
-<style scoped>
-.code-wrapper {
-  width: 100%;
-}
-</style>

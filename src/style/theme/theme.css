@@ -26,6 +26,14 @@
   --vtip-code-toolbar-bg: #21252b; /* 代码块工具栏背景色 */
   --vtip-code-toolbar-text: #9da5b4; /* 代码块工具栏文本色 */
   --vtip-code-toolbar-hover: #abb2bf; /* 代码块工具栏悬停色 */
+  --vtip-code-lang-menu-bg: #1f2937;
+  --vtip-code-lang-menu-border: #374151;
+  --vtip-code-lang-item-text: #e5e7eb;
+  --vtip-code-lang-item-bg-hover: #374151;
+  --vtip-code-lang-item-text-hover: #ffffff;
+  --vtip-code-lang-search-text: #e5e7eb;
+  --vtip-code-lang-search-placeholder: #9ca3af;
+  --vtip-code-lang-search-icon: #9ca3af;
 
   /* Syntax Highlighting (语法高亮) */
   --vtip-code-comment: #5c6370; /* 注释 */
@@ -61,6 +69,14 @@
   --vtip-code-toolbar-bg: #21252b; /* 代码块工具栏背景色 */
   --vtip-code-toolbar-text: #9da5b4; /* 代码块工具栏文本色 */
   --vtip-code-toolbar-hover: #abb2bf; /* 代码块工具栏悬停色 */
+  --vtip-code-lang-menu-bg: #1f2937;
+  --vtip-code-lang-menu-border: #374151;
+  --vtip-code-lang-item-text: #e5e7eb;
+  --vtip-code-lang-item-bg-hover: #374151;
+  --vtip-code-lang-item-text-hover: #ffffff;
+  --vtip-code-lang-search-text: #e5e7eb;
+  --vtip-code-lang-search-placeholder: #9ca3af;
+  --vtip-code-lang-search-icon: #9ca3af;
 
   /* Syntax Highlighting (语法高亮) */
   --vtip-code-comment: #5c6370; /* 注释 */
@@ -96,6 +112,14 @@
   --vtip-code-toolbar-bg: #f3f4f6; /* 代码块工具栏背景色 */
   --vtip-code-toolbar-text: #6b7280; /* 代码块工具栏文本色 */
   --vtip-code-toolbar-hover: #374151; /* 代码块工具栏悬停色 */
+  --vtip-code-lang-menu-bg: #ffffff;
+  --vtip-code-lang-menu-border: #dddddd;
+  --vtip-code-lang-item-text: #374151;
+  --vtip-code-lang-item-bg-hover: #f3f4f6;
+  --vtip-code-lang-item-text-hover: #111827;
+  --vtip-code-lang-search-text: #374151;
+  --vtip-code-lang-search-placeholder: #6b7280;
+  --vtip-code-lang-search-icon: #6b7280;
 
   /* Syntax Highlighting (语法高亮) */
   --vtip-code-comment: #a0a1a7; /* 注释 */

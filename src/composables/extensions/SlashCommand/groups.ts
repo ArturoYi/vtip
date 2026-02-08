@@ -21,4 +21,10 @@ export const defaultCommandGroups: CommandGroup[] = [
       ...toolbarCommands.table,
     ],
   },
+  {
+    title: 'Media',
+    items: [
+      ...toolbarCommands.media,
+    ],
+  },
 ]
