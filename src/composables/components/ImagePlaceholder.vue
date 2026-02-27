@@ -40,8 +40,7 @@ async function openFileDialog() {
 </script>
 <template>
     <NodeViewWrapper as="div" contenteditable="false"
-        class="media-placeholder relative my-4 flex w-full items-center justify-start gap-4 p-6"
-        style="user-select: none;" :draggable="true" @click="open = true">
+        class="media-placeholder" :draggable="true" @click="open = true">
         <template v-if="!isUploading">
             <Image />
             <span>Insert an Image</span>
@@ -50,28 +49,61 @@ async function openFileDialog() {
             <Loader class="text-primary animate-spin" />
             <span>Uploading Image</span>
         </template>
-        <div v-if="open" class="absolute left-1/2 top-full z-50 mt-2 w-96 -translate-x-1/2 rounded-lg bg-popover p-4">
-            <div class="flex gap-2">
-                <button type="button" class="px-3 py-1.5 rounded-md" :class="{ 'bg-muted': activeTab === 'local' }"
+        <div v-if="open" class="absolute left-1/2 top-full z-50 mt-2 w-96 -translate-x-1/2 rounded-lg bg-popover p-4 border border-border shadow-lg">
+            <div class="flex gap-2 mb-4">
+                <button type="button" class="px-3 py-1.5 rounded-md text-sm font-medium transition-colors" :class="activeTab === 'local' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'"
                     @click.stop="activeTab = 'local'">
                     Upload
                 </button>
-                <button type="button" class="px-3 py-1.5 rounded-md" :class="{ 'bg-muted': activeTab === 'url' }"
+                <button type="button" class="px-3 py-1.5 rounded-md text-sm font-medium transition-colors" :class="activeTab === 'url' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'"
                     @click.stop="activeTab = 'url'">
                     Embed Link
                 </button>
             </div>
             <div v-if="activeTab === 'local'" class="py-2">
-                <button type="button" class="w-full" @click.stop="openFileDialog">
-                    Upload an Image
+                <button type="button" class="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors" @click.stop="openFileDialog">
+                    <Loader v-if="isUploading" class="w-4 h-4 animate-spin" />
+                    {{ isUploading ? 'Uploading...' : 'Upload an Image' }}
                 </button>
             </div>
             <div v-else class="py-2">
-                <form class="flex flex-col gap-2" @submit="handleSubmit">
-                    <input v-model="imageUrl" placeholder="Embed Image" required type="url" />
-                    <button type="submit">Insert</button>
+                <form class="flex flex-col gap-3" @submit="handleSubmit">
+                    <input v-model="imageUrl" placeholder="Paste image URL here..." required type="url" 
+                        class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" />
+                    <button type="submit" class="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
+                        Insert Image
+                    </button>
                 </form>
             </div>
         </div>
     </NodeViewWrapper>
 </template>
+
+<style scoped>
+.media-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 2rem;
+    border: 2px dashed var(--vtip-placeholder-border);
+    border-radius: 0.5rem;
+    background-color: var(--vtip-placeholder-bg);
+    color: var(--vtip-placeholder-text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    margin: 1rem 0;
+}
+
+.media-placeholder:hover {
+    border-color: var(--vtip-placeholder-text);
+    background-color: var(--vtip-placeholder-bg);
+    opacity: 0.8;
+}
+
+.media-placeholder :deep(svg) {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+</style>

@@ -13,6 +13,9 @@ export default defineConfig({
       cleanVueFileName: true,
     }),
   ],
+  server: {
+    host: true,
+  },
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),

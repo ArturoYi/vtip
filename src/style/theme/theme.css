@@ -35,6 +35,11 @@
   --vtip-code-lang-search-placeholder: #9ca3af;
   --vtip-code-lang-search-icon: #9ca3af;
 
+  /* Placeholder (占位符) */
+  --vtip-placeholder-bg: #374151; /* 占位符背景色 */
+  --vtip-placeholder-text: #9ca3af; /* 占位符文本色 */
+  --vtip-placeholder-border: #4b5563; /* 占位符边框色 */
+
   /* Syntax Highlighting (语法高亮) */
   --vtip-code-comment: #5c6370; /* 注释 */
   --vtip-code-keyword: #c678dd; /* 关键字 */
@@ -78,6 +83,11 @@
   --vtip-code-lang-search-placeholder: #9ca3af;
   --vtip-code-lang-search-icon: #9ca3af;
 
+  /* Placeholder (占位符) */
+  --vtip-placeholder-bg: #374151; /* 占位符背景色 */
+  --vtip-placeholder-text: #9ca3af; /* 占位符文本色 */
+  --vtip-placeholder-border: #4b5563; /* 占位符边框色 */
+
   /* Syntax Highlighting (语法高亮) */
   --vtip-code-comment: #5c6370; /* 注释 */
   --vtip-code-keyword: #c678dd; /* 关键字 */
@@ -120,6 +130,11 @@
   --vtip-code-lang-search-text: #374151;
   --vtip-code-lang-search-placeholder: #6b7280;
   --vtip-code-lang-search-icon: #6b7280;
+
+  /* Placeholder (占位符) */
+  --vtip-placeholder-bg: #f3f4f6; /* 占位符背景色 */
+  --vtip-placeholder-text: #6b7280; /* 占位符文本色 */
+  --vtip-placeholder-border: #e5e7eb; /* 占位符边框色 */
 
   /* Syntax Highlighting (语法高亮) */
   --vtip-code-comment: #a0a1a7; /* 注释 */
