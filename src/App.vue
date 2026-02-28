@@ -17,7 +17,6 @@ const editor = useVtip({
 
 <template>
   <div style="padding: 2rem; margin: 0 auto;">
-    <h1>Vue3 Tiptap Editor Demo</h1>
     <div class="editor-wrapper" v-if="editor">
       <EditorToolbar :editor="editor" />
       <editor-content :editor="editor" />

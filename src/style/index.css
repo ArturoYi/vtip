@@ -5,12 +5,36 @@
 /* vtip table styles
  * 全局共享基本样式
  */
+/* 编辑器根：防止内部宽内容导致整页横向滚动 */
+.editor-wrapper {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
 .tiptap,
 .ProseMirror {
   /* ProseMirror 必需的 white-space 属性 */
   white-space: pre-wrap;
   margin-inline: auto;
   outline: none;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* 媒体节点（图片占位等）防止横向溢出 */
+.edra-media-container {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.edra-media-group {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .vtip-scrollbar {
@@ -34,4 +58,65 @@
 
 .vtip-scrollbar::-webkit-scrollbar-thumb:hover {
   background: var(--vtip-scrollbar-thumb-hover);
+}
+
+/* vtip 按钮：统一基础与变体，便于各组件复用 */
+.vtip-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  outline: none;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    color 200ms,
+    background-color 200ms,
+    border-color 200ms,
+    opacity 200ms,
+    transform 200ms,
+    box-shadow 200ms,
+    filter 200ms;
+}
+
+.vtip-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.vtip-btn:focus-visible {
+  box-shadow: 0 0 0 2px var(--vtip-code-function);
+}
+
+/* 幽灵按钮：透明背景，悬停时轻微高亮 */
+.vtip-btn--ghost {
+  color: var(--vtip-placeholder-text);
+  background: transparent;
+}
+
+.vtip-btn--ghost:hover:not(:disabled) {
+  background: var(--vtip-slash-item-bg-hover);
+  color: var(--vtip-slash-item-text-hover);
+}
+
+.vtip-btn--ghost:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* 主色按钮：强调操作 */
+.vtip-btn--primary {
+  background: var(--vtip-code-function);
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.vtip-btn--primary:hover:not(:disabled) {
+  filter: brightness(1.12);
+}
+
+.vtip-btn--primary:active:not(:disabled) {
+  transform: scale(0.96);
 }
