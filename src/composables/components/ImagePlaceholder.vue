@@ -39,7 +39,7 @@ async function openFileDialog() {
 
 </script>
 <template>
-    <NodeViewWrapper class="media-placeholder-container relative w-full min-w-0 group" contenteditable="false">
+    <NodeViewWrapper class="media-placeholder-container my-4 relative w-full min-w-0 group" contenteditable="false">
 
         <!-- Read-only State -->
         <div v-if="!editor.isEditable"

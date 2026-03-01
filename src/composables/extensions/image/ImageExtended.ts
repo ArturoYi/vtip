@@ -18,13 +18,13 @@ export const ImageExtended = (component?: Component<NodeViewProps>): Node<ImageO
                     default: null
                 },
                 width: {
-                    default: '100%'
+                    default: '50%'
                 },
                 height: {
                     default: null
                 },
                 align: {
-                    default: 'left'
+                    default: 'center'
                 }
             };
         },

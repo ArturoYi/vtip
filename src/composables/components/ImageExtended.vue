@@ -13,6 +13,7 @@ const props = defineProps<NodeViewProps>();
       :src="props.node.attrs.src"
       :alt="props.node.attrs.alt"
       :title="props.node.attrs.title"
+      class="m-0 object-cover"
     />
   </MediaExtended>
 </template>

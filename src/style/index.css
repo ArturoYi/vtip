@@ -24,17 +24,167 @@
   overflow-x: hidden;
 }
 
-/* 媒体节点（图片占位等）防止横向溢出 */
+/* 媒体节点外层：占满编辑器宽度，用 flex 实现左/中/右对齐 */
+.edra-media-container.edra-media-container-outer {
+  width: 100%;
+  display: flex;
+  min-width: 0;
+  max-width: 100%;
+}
+.edra-media-container-outer.align-left {
+  justify-content: flex-start;
+}
+.edra-media-container-outer.align-center {
+  justify-content: center;
+}
+.edra-media-container-outer.align-right {
+  justify-content: flex-end;
+}
+
+/* 媒体节点内层：实际可拖拽的宽度，相对外层 100% 计算 */
 .edra-media-container {
+  position: relative;
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: visible;
+}
+
+.edra-media-group {
+  width: 100%;
   min-width: 0;
   max-width: 100%;
   overflow-x: hidden;
 }
 
-.edra-media-group {
+/* 媒体容器内层：保证 ref 指向稳定 DOM，在 flex 中保持设定宽度不压缩 */
+.edra-media-container-inner {
+  position: relative;
+  flex-shrink: 0;
   min-width: 0;
   max-width: 100%;
-  overflow-x: hidden;
+  /* width 由内联 style 控制（node.attrs.width） */
+}
+
+/* 媒体组内层：仅布局，不参与定位 */
+.edra-media-group-inner {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* 左右拖拽感应区：宽度 20px，垂直居中，col-resize 光标 */
+.edra-media-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  cursor: col-resize;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+.edra-media-handle--left {
+  left: 0;
+}
+.edra-media-handle--right {
+  right: 0;
+}
+
+/* 指示条：默认透明，悬停或拖拽时显示，高度 64px、圆角 */
+.edra-media-handle-bar {
+  width: 4px;
+  height: 64px;
+  border-radius: 9999px;
+  background: var(--vtip-code-function, #0ea5e9);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+.edra-media-handle-bar--visible {
+  opacity: 0.8;
+}
+
+.edra-media-group--resizing {
+  user-select: none;
+}
+
+/* 插槽顶部操作栏：悬停或拖拽时显示，水平对齐按钮 */
+.edra-media-toolbar {
+  position: absolute;
+  top: -0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--vtip-placeholder-text, rgba(0, 0, 0, 0.1));
+  background: color-mix(in srgb, var(--vtip-code-function, #0ea5e9) 8%, transparent);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+.edra-media-toolbar--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.edra-media-toolbar-btn {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.25rem;
+}
+/* 当前布局对应的按钮保持选中样式 */
+.edra-media-toolbar-btn--active {
+  background: var(--vtip-slash-item-bg-hover, rgba(0, 0, 0, 0.08));
+  color: var(--vtip-code-function, #0ea5e9);
+}
+
+/* slot 内媒体随容器缩放：可随容器放大而拉伸，不受图片原宽限制 */
+.edra-media-group img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+.edra-media-group video,
+.edra-media-group iframe {
+  max-width: 100%;
+  width: 100%;
+  display: block;
+}
+
+/* 媒体标题：编辑态为无边框输入框，只读态为文案 */
+.edra-media-caption {
+  width: 100%;
+  margin-top: 0.25rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--vtip-placeholder-text, #6b7280);
+}
+.edra-media-caption--edit {
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0.25rem 0;
+}
+.edra-media-caption--edit::placeholder {
+  color: var(--vtip-placeholder-text, #9ca3af);
+}
+.edra-media-caption--readonly {
+  color: inherit;
 }
 
 .vtip-scrollbar {
