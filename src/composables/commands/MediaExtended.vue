@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { NodeViewProps } from '@tiptap/vue-3';
 import { NodeViewWrapper } from '@tiptap/vue-3';
-import { computed, onBeforeUnmount, onMounted, ref, type VNodeRef } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch, type VNodeRef } from 'vue';
 import { AlignLeft, AlignCenter, AlignRight } from 'lucide-vue-next';
 
 const { node, selected, updateAttributes, editor } = defineProps<NodeViewProps>();
@@ -166,6 +166,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('touchmove', handleTouchMove);
   window.removeEventListener('touchend', handleTouchEnd);
   window.removeEventListener('touchcancel', handleTouchEnd);
+  resizeObserver?.disconnect();
 });
 
 /** 左/右侧手柄的 mousedown 委托，调用 startResize */
@@ -182,6 +183,37 @@ function handleResizeTouchStart(position: 'left' | 'right', e: TouchEvent): void
 const setMediaRef: VNodeRef = (el) => {
   mediaRef.value = el instanceof HTMLElement ? el : null;
 };
+
+/** 将媒体元素高度同步到容器 CSS 变量，用于限制缩放手柄高度，避免矮媒体（如 audio）时手柄超出 */
+function updateMediaHeightVar(): void {
+  if (!containerRef.value) return;
+  const h = mediaRef.value?.offsetHeight;
+  if (h != null && h > 0) {
+    containerRef.value.style.setProperty('--edra-media-height', `${h}px`);
+  } else {
+    containerRef.value.style.removeProperty('--edra-media-height');
+  }
+}
+
+let resizeObserver: ResizeObserver | null = null;
+
+watch(
+  mediaRef,
+  (el) => {
+    if (resizeObserver) {
+      resizeObserver.disconnect();
+      resizeObserver = null;
+    }
+    if (!el) {
+      updateMediaHeightVar();
+      return;
+    }
+    resizeObserver = new ResizeObserver(updateMediaHeightVar);
+    resizeObserver.observe(el);
+    updateMediaHeightVar();
+  },
+  { immediate: true }
+);
 </script>
 
 <template>

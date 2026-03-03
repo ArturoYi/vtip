@@ -1,5 +1,5 @@
 import { Editor } from "@tiptap/vue-3";
-import { Heading1, Heading2, Heading3, Heading4, Link, Pilcrow, Bold, Italic, Underline, Strikethrough as StrikeThrough, Quote, Code, Superscript, Subscript, List, ListOrdered, CheckSquare, Minus, Table, Image } from "lucide-vue-next";
+import { Heading1, Heading2, Heading3, Heading4, Link, Pilcrow, Bold, Italic, Underline, Strikethrough as StrikeThrough, Quote, Code, Superscript, Subscript, List, ListOrdered, CheckSquare, Minus, Table, Image, Music } from "lucide-vue-next";
 import { isMac } from "../utils";
 import { VtipToolBarCommands } from "./types";
 
@@ -338,6 +338,15 @@ export const toolbarCommands: Record<string, VtipToolBarCommands[]> = {
                 editor.chain().focus().insertImagePlaceholder().run();
             },
             isActive: (editor) => editor.isActive('image-placeholder')
+        },
+        {
+            icon: Music,
+            name: 'audio-placeholder',
+            tooltip: 'Audio Placeholder',
+            onClick: (editor) => {
+                editor.chain().focus().insertAudioPlaceholder().run();
+            },
+            isActive: (editor) => editor.isActive('audio-placeholder')
         },
     ],
 }

@@ -73,11 +73,12 @@
   max-width: 100%;
 }
 
-/* 左右拖拽感应区：宽度 20px，垂直居中，col-resize 光标 */
+/* 左右拖拽感应区：宽度 20px，垂直居中，col-resize 光标；高度不超过媒体元素（由 --edra-media-height 限制） */
 .edra-media-handle {
   position: absolute;
   top: 0;
-  bottom: 0;
+  bottom: auto;
+  height: var(--edra-media-height, 100%);
   width: 20px;
   cursor: col-resize;
   z-index: 10;
