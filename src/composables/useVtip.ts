@@ -30,6 +30,10 @@ import { AudioExtended } from './extensions/audio/AudioExtended'
 import AudioExtendedComponent from './components/AudioExtended.vue'
 import AudioPlaceholderComponent from './components/AudioPlaceholder.vue'
 import { AudioPlaceholder } from './extensions/audio/AudioPlaceholder'
+import { VideoExtended } from './extensions/video/VideoExtended'
+import VideoExtendedComponent from './components/VideoExtended.vue'
+import VideoPlaceholderComponent from './components/VideoPlaceholder.vue'
+import { VideoPlaceholder } from './extensions/video/VideoPlaceholder'
 import { FileDrop } from './extensions/HandleFileDrop'
 
 
@@ -121,6 +125,8 @@ export const useVtip = (options: Partial<EditorOptions> = {}) => {
         ImagePlaceholder(ImagePlaceholderComponent),
         AudioExtended(AudioExtendedComponent),
         AudioPlaceholder(AudioPlaceholderComponent),
+        VideoExtended(VideoExtendedComponent),
+        VideoPlaceholder(VideoPlaceholderComponent),
 				FileDrop.configure({
           // 本地上传文件
           localFileGetter: async (fileType) => {
