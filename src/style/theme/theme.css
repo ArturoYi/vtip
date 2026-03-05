@@ -1,5 +1,7 @@
 :root {
   /* Default to Dark Theme (默认暗色主题) */
+  --vtip-editor-bg: #1a1d26; /* 编辑器内容区背景，与代码块/菜单等区分 */
+  --vtip-editor-text: #e5e7eb; /* 编辑器正文文字颜色，暗色背景下需浅色 */
   --vtip-slash-menu-bg: #1f2937;
   /* Slash 菜单背景色 */
   --vtip-slash-menu-border: #374151;
@@ -40,6 +42,21 @@
   --vtip-placeholder-text: #9ca3af; /* 占位符文本色 */
   --vtip-placeholder-border: #4b5563; /* 占位符边框色 */
 
+  /* Blockquote (引用块) */
+  --vtip-blockquote-border: #61afef;
+  --vtip-blockquote-bg: rgba(97, 175, 239, 0.08);
+  --vtip-blockquote-text: #9ca3af;
+
+  /* Table (表格) */
+  --vtip-table-border: #374151;
+  --vtip-table-bg-selected: rgba(75, 85, 99, 0.35);
+  --vtip-table-bg-hover: rgba(75, 85, 99, 0.2);
+  --vtip-table-menu-bg: #1f2937;
+  --vtip-table-menu-border: #374151;
+  --vtip-table-menu-text: #e5e7eb;
+  --vtip-table-menu-hover: #374151;
+  --vtip-table-menu-destructive: #ef4444;
+
   /* Syntax Highlighting (语法高亮) */
   --vtip-code-comment: #5c6370; /* 注释 */
   --vtip-code-keyword: #c678dd; /* 关键字 */
@@ -55,6 +72,8 @@
 
 /* Explicit Dark Theme (显式暗色主题) */
 [data-theme='dark'] {
+  --vtip-editor-bg: #1a1d26; /* 编辑器内容区背景 */
+  --vtip-editor-text: #e5e7eb; /* 编辑器正文文字颜色 */
   --vtip-slash-menu-bg: #1f2937; /* Slash 菜单背景色 */
   --vtip-slash-menu-border: #374151; /* Slash 菜单边框色 */
   --vtip-slash-item-text: #e5e7eb; /* Slash 菜单项文本色 */
@@ -88,6 +107,11 @@
   --vtip-placeholder-text: #9ca3af; /* 占位符文本色 */
   --vtip-placeholder-border: #4b5563; /* 占位符边框色 */
 
+  /* Blockquote (引用块) */
+  --vtip-blockquote-border: #61afef;
+  --vtip-blockquote-bg: rgba(97, 175, 239, 0.08);
+  --vtip-blockquote-text: #9ca3af;
+
   /* Syntax Highlighting (语法高亮) */
   --vtip-code-comment: #5c6370; /* 注释 */
   --vtip-code-keyword: #c678dd; /* 关键字 */
@@ -99,10 +123,22 @@
   --vtip-code-class: #e5c07b; /* 类名 */
   --vtip-code-variable: #e06c75; /* 变量 */
   --vtip-code-operator: #56b6c2; /* 运算符 */
+
+  /* Table (表格) */
+  --vtip-table-border: #374151;
+  --vtip-table-bg-selected: rgba(75, 85, 99, 0.35);
+  --vtip-table-bg-hover: rgba(75, 85, 99, 0.2);
+  --vtip-table-menu-bg: #1f2937;
+  --vtip-table-menu-border: #374151;
+  --vtip-table-menu-text: #e5e7eb;
+  --vtip-table-menu-hover: #374151;
+  --vtip-table-menu-destructive: #ef4444;
 }
 
 /* Light Theme (亮色主题) */
 [data-theme='light'] {
+  --vtip-editor-bg: #f1f5f9; /* 编辑器内容区背景，与白底和代码块区分 */
+  --vtip-editor-text: #1f2937; /* 编辑器正文文字颜色 */
   --vtip-slash-menu-bg: #ffffff; /* Slash 菜单背景色 */
   --vtip-slash-menu-border: #dddddd; /* Slash 菜单边框色 */
   --vtip-slash-item-text: #374151; /* Slash 菜单项文本色 */
@@ -136,6 +172,11 @@
   --vtip-placeholder-text: #6b7280; /* 占位符文本色 */
   --vtip-placeholder-border: #e5e7eb; /* 占位符边框色 */
 
+  /* Blockquote (引用块) */
+  --vtip-blockquote-border: #4078f2;
+  --vtip-blockquote-bg: rgba(64, 120, 242, 0.06);
+  --vtip-blockquote-text: #6b7280;
+
   /* Syntax Highlighting (语法高亮) */
   --vtip-code-comment: #a0a1a7; /* 注释 */
   --vtip-code-keyword: #a626a4; /* 关键字 */
@@ -147,4 +188,14 @@
   --vtip-code-class: #c18401; /* 类名 */
   --vtip-code-variable: #e45649; /* 变量 */
   --vtip-code-operator: #0184bc; /* 运算符 */
+
+  /* Table (表格) */
+  --vtip-table-border: #e5e7eb;
+  --vtip-table-bg-selected: rgba(0, 0, 0, 0.06);
+  --vtip-table-bg-hover: rgba(0, 0, 0, 0.04);
+  --vtip-table-menu-bg: #ffffff;
+  --vtip-table-menu-border: #e5e7eb;
+  --vtip-table-menu-text: #374151;
+  --vtip-table-menu-hover: #f3f4f6;
+  --vtip-table-menu-destructive: #dc2626;
 }

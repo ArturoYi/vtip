@@ -13,6 +13,12 @@
   overflow-x: hidden;
 }
 
+/* 编辑器容器与块级内容统一的内边距 */
+:root {
+  --vtip-block-padding-x: 3rem;
+  --vtip-editor-padding-y: 1rem;
+}
+
 .tiptap,
 .ProseMirror {
   /* ProseMirror 必需的 white-space 属性 */
@@ -22,6 +28,303 @@
   min-width: 0;
   max-width: 100%;
   overflow-x: hidden;
+  /* 编辑器整体背景与正文文字颜色，随主题变化 */
+  background-color: var(--vtip-editor-bg);
+  color: var(--vtip-editor-text);
+  min-height: 100%;
+  border-radius: 0.375rem;
+  /* 统一内边距，由容器控制左右与上下留白 */
+  padding: var(--vtip-editor-padding-y) var(--vtip-block-padding-x);
+  box-sizing: border-box;
+  --vtip-table-border-size: 1px;
+  --vtip-table-resize-handle: 2px;
+}
+
+/* 表格：包装器与基础样式（左/上留出空间供 grip），水平由容器内边距统一 */
+.tiptap .tableWrapper,
+.ProseMirror .tableWrapper {
+  padding: 1.25rem 0;
+  margin: 0.5rem 0;
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+/* 分隔线：仅垂直外边距，水平由容器内边距统一 */
+.tiptap hr,
+.ProseMirror hr {
+  margin: 0.5rem 0;
+}
+
+/* 引用块：仅垂直外边距，水平由容器内边距统一；左侧竖线 + 背景 */
+.tiptap blockquote,
+.ProseMirror blockquote {
+  margin: 0.75rem 0;
+  padding: 0.75rem 1.25rem;
+  border-left: 3px solid var(--vtip-blockquote-border);
+  background-color: var(--vtip-blockquote-bg);
+  border-radius: 0 6px 6px 0;
+  box-sizing: border-box;
+}
+
+.tiptap blockquote p,
+.ProseMirror blockquote p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.tiptap blockquote p:first-child,
+.ProseMirror blockquote p:first-child {
+  margin-top: 0;
+}
+
+.tiptap blockquote p + p,
+.ProseMirror blockquote p + p {
+  margin-top: 0.5rem;
+}
+
+.tiptap table,
+.ProseMirror table {
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border-collapse: collapse;
+  border: var(--vtip-table-border-size) solid var(--vtip-table-border);
+  border-radius: 0.5rem;
+  overflow: visible;
+}
+
+.tiptap table td,
+.tiptap table th,
+.ProseMirror table td,
+.ProseMirror table th {
+  position: relative;
+  min-width: 100px;
+  padding: 0.5rem 0.75rem;
+  vertical-align: top;
+  text-align: left;
+  border: var(--vtip-table-border-size) solid var(--vtip-table-border);
+}
+
+.tiptap table th,
+.ProseMirror table th {
+  font-weight: 600;
+  background-color: var(--vtip-table-bg-selected);
+}
+
+.tiptap table td p,
+.tiptap table th p,
+.ProseMirror table td p,
+.ProseMirror table th p {
+  margin: 0;
+}
+
+.tiptap table td p + p,
+.tiptap table th p + p,
+.ProseMirror table td p + p,
+.ProseMirror table th p + p {
+  margin-top: 0.5rem;
+}
+
+/* 列宽拖拽手柄 */
+.tiptap table .column-resize-handle,
+.ProseMirror table .column-resize-handle {
+  position: absolute;
+  top: 0;
+  right: -2px;
+  bottom: -2px;
+  width: var(--vtip-table-resize-handle);
+  cursor: col-resize;
+  background-color: var(--vtip-code-function);
+}
+
+/* 选中单元格 */
+.tiptap table .selectedCell,
+.ProseMirror table .selectedCell {
+  z-index: 1;
+  outline: 2px solid var(--vtip-code-function);
+  background-color: var(--vtip-table-bg-selected);
+}
+
+/* 行/列 grip 基础 */
+.tiptap .tableWrapper .grip-column,
+.tiptap .tableWrapper .grip-row,
+.ProseMirror .tableWrapper .grip-column,
+.ProseMirror .tableWrapper .grip-row {
+  position: absolute;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  cursor: pointer;
+  background-color: var(--vtip-table-bg-selected);
+  opacity: 0;
+  transition: opacity 150ms ease-in-out;
+}
+
+.tiptap table .grip-column,
+.ProseMirror table .grip-column {
+  top: -0.9rem;
+  left: 0;
+  width: 100%;
+  height: 0.8rem;
+  margin-left: -1px;
+  border: 1px solid var(--vtip-table-border);
+  border-radius: 1rem;
+}
+
+.tiptap table .grip-column::before,
+.ProseMirror table .grip-column::before {
+  width: 0.625rem;
+  content: '';
+  border-bottom: 2px dotted var(--vtip-placeholder-text);
+}
+
+.tiptap table .grip-column:hover,
+.tiptap table .grip-column.selected,
+.ProseMirror table .grip-column:hover,
+.ProseMirror table .grip-column.selected {
+  background-color: var(--vtip-table-bg-hover);
+}
+
+.tiptap table .grip-row,
+.ProseMirror table .grip-row {
+  top: 0;
+  left: -0.9rem;
+  width: 0.8rem;
+  height: 100%;
+  margin-top: -1px;
+  border: 1px solid var(--vtip-table-border);
+  border-radius: 1rem;
+}
+
+.tiptap table .grip-row::before,
+.ProseMirror table .grip-row::before {
+  height: 0.625rem;
+  content: '';
+  border-left: 2px dotted var(--vtip-placeholder-text);
+}
+
+.tiptap table .grip-row:hover,
+.tiptap table .grip-row.selected,
+.ProseMirror table .grip-row:hover,
+.ProseMirror table .grip-row.selected {
+  background-color: var(--vtip-table-bg-hover);
+}
+
+/* 悬停时显示当前行/列 grip */
+.tiptap .tableWrapper .grip-row.show-row-grip,
+.tiptap .tableWrapper .grip-column.show-col-grip,
+.ProseMirror .tableWrapper .grip-row.show-row-grip,
+.ProseMirror .tableWrapper .grip-column.show-col-grip {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+/* 添加行/列按钮 */
+.tiptap .add-column-btn,
+.tiptap .add-row-btn,
+.ProseMirror .add-column-btn,
+.ProseMirror .add-row-btn {
+  position: absolute;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--vtip-placeholder-text);
+  cursor: pointer;
+  background-color: var(--vtip-table-bg-selected);
+  border: var(--vtip-table-border-size) solid var(--vtip-table-border);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.tiptap .tableWrapper.last-column-hover .add-column-btn,
+.tiptap .tableWrapper.last-row-hover .add-row-btn,
+.ProseMirror .tableWrapper.last-column-hover .add-column-btn,
+.ProseMirror .tableWrapper.last-row-hover .add-row-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.tiptap .add-column-btn:hover,
+.tiptap .add-row-btn:hover,
+.ProseMirror .add-column-btn:hover,
+.ProseMirror .add-row-btn:hover {
+  background-color: var(--vtip-table-bg-hover);
+  color: var(--vtip-code-function);
+}
+
+.tiptap .add-column-btn,
+.ProseMirror .add-column-btn {
+  top: 0;
+  right: -0.85rem;
+  width: 0.75rem;
+  height: 100%;
+}
+
+.tiptap .add-row-btn,
+.ProseMirror .add-row-btn {
+  bottom: -0.85rem;
+  left: 0;
+  width: 100%;
+  height: 0.75rem;
+}
+
+/* 表格行/列 BubbleMenu 样式 */
+.vtip-table-menu {
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--vtip-table-menu-border);
+  background-color: var(--vtip-table-menu-bg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.vtip-table-menu-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--vtip-table-menu-text);
+  background: transparent;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.vtip-table-menu-item:hover {
+  background-color: var(--vtip-table-menu-hover);
+  color: inherit;
+}
+
+.vtip-table-menu-item--destructive:hover {
+  background-color: color-mix(in srgb, var(--vtip-table-menu-destructive) 15%, transparent);
+  color: var(--vtip-table-menu-destructive);
+}
+
+.vtip-table-menu-icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
+.vtip-table-menu-sep {
+  height: 1px;
+  margin: 2px 0;
+  background-color: var(--vtip-table-menu-border);
 }
 
 /* 媒体节点外层：占满编辑器宽度，用 flex 实现左/中/右对齐 */

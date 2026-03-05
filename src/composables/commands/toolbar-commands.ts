@@ -313,10 +313,13 @@ export const toolbarCommands: Record<string, VtipToolBarCommands[]> = {
         {
             icon: Minus,
             name: 'Horizontal Rule',
+            tooltip: 'Horizontal Rule',
             description: 'Insert a horizontal divider.',
             onClick: (editor: Editor) => {
                 editor.chain().focus().setHorizontalRule().run();
-            }
+            },
+            clickable: (editor: Editor) => editor.can().setHorizontalRule(),
+            isActive: (editor: Editor) => editor.isActive('horizontalRule'),
         }
     ],
     table: [

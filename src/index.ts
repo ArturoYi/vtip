@@ -3,5 +3,7 @@ import { useVtip } from './composables/useVtip'
 import './style/index.css'
 import EditorToolbar from './components/toolbar/EditorToolbar.vue'
 import { EditorContent } from '@tiptap/vue-3'
+import TableColMenu from './composables/components/TableColMenu.vue'
+import TableRowMenu from './composables/components/TableRowMenu.vue'
 
-export { useVtip, EditorContent, EditorToolbar }
+export { useVtip, EditorContent, EditorToolbar, TableColMenu, TableRowMenu }

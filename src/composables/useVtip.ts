@@ -1,3 +1,4 @@
+import { ref } from 'vue'
 import { Editor, useEditor, VueNodeViewRenderer, type EditorOptions } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import { Highlight } from '@tiptap/extension-highlight'
@@ -7,13 +8,16 @@ import { Superscript } from '@tiptap/extension-superscript'
 import { Typography } from '@tiptap/extension-typography'
 import { TextAlign } from '@tiptap/extension-text-align'
 import { Markdown } from '@tiptap/markdown'
-import { Table } from '@tiptap/extension-table'
-import { TableHeader } from '@tiptap/extension-table-header'
-import { TableRow } from '@tiptap/extension-table-row'
-import { TableCell } from '@tiptap/extension-table-cell'
+import {
+  Table,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from './extensions/table'
 import { Mathematics } from '@tiptap/extension-mathematics'
 import { common, createLowlight } from 'lowlight'
 import { Color, FontSize, TextStyle } from '@tiptap/extension-text-style';
+import TableOfContents, { getHierarchicalIndexes } from '@tiptap/extension-table-of-contents';
 import { CharacterCount } from '@tiptap/extensions'
 import { InlineMathReplacer } from './extensions/InlineMathReplacer'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
@@ -41,10 +45,22 @@ import { IFramePlaceholder } from './extensions/iframe/IFramePlaceholder'
 import { FileDrop } from './extensions/HandleFileDrop'
 
 
-export const useVtip = (options: Partial<EditorOptions> = {}) => {
-  const { extensions = [], ...otherOptions } = options
-  // create a lowlight instance
+
+export type UseVtipOptions = Partial<EditorOptions> & {
+  /** 目录滚动容器，传入编辑器根元素 ref 的 getter，如 () => editorRef.value */
+  scrollParent?: () => HTMLElement | Window
+}
+
+export const useVtip = (options: UseVtipOptions = {}) => {
+  const { extensions = [], scrollParent: scrollParentFn, ...otherOptions } = options
+  // 创建 lowlight 实例
   const lowlight = createLowlight(common)
+
+  // 数学公式点击状态，供 Math / MathInline 等菜单使用
+  const blockMathPos = ref(0)
+  const blockMathLatex = ref('')
+  const inlineMathPos = ref(0)
+  const inlineMathLatex = ref('')
 
   const editor = useEditor(
     {
@@ -82,8 +98,7 @@ export const useVtip = (options: Partial<EditorOptions> = {}) => {
         }),
         Placeholder.configure({
           emptyEditorClass: 'is-empty',
-          // Use a placeholder:
-          // Use different placeholders depending on the node type:
+          // 使用占位符，根据节点类型使用不同占位文案
           placeholder: ({ node }) => {
             if (node.type.name === 'heading') {
               return 'What’s the title?';
@@ -113,9 +128,8 @@ export const useVtip = (options: Partial<EditorOptions> = {}) => {
         TableHeader, // 表格头
         TableRow, // 表格行
         TableCell, // 表格单元格
-        Mathematics, // 行内数学公式 (Using installed @tiptap/extension-mathematics)
         InlineMathReplacer, // 行内数学公式替换器
-        Markdown, // markdown 语法
+        Markdown, // Markdown 语法
 
         //-------------------UI扩展----------------------
         CodeBlockLowlight.configure({
@@ -133,18 +147,51 @@ export const useVtip = (options: Partial<EditorOptions> = {}) => {
         VideoPlaceholder(VideoPlaceholderComponent),
         IFrameExtended(IFrameExtendedComponent),
         IFramePlaceholder(IFramePlaceholderComponent),
-				FileDrop.configure({
+        FileDrop.configure({
           // 本地上传文件
           localFileGetter: async (fileType) => {
             return "https://placehold.co/600x400";
           }
         }), // 文件上传
         SlashCommand,// 斜杠命令
+        Mathematics.configure({
+          // 块级数学公式节点配置（与 editor.svelte 一致）
+          blockOptions: {
+            onClick: (node, pos) => {
+              blockMathPos.value = pos
+              blockMathLatex.value = node.attrs.latex
+            }
+          },
+          inlineOptions: {
+            onClick: (node, pos) => {
+              inlineMathPos.value = pos
+              inlineMathLatex.value = node.attrs.latex
+            }
+          },
+          // KaTeX 渲染器选项，参见：https://katex.org/docs/options.html
+          katexOptions: {
+            throwOnError: true, // LaTeX 无效时不抛出错误
+            macros: {
+              '\\R': '\\mathbb{R}', // 实数宏
+              '\\N': '\\mathbb{N}' // 自然数宏
+            }
+          }
+        }),
+        TableOfContents.configure({
+          getIndex: getHierarchicalIndexes,
+          scrollParent: scrollParentFn ?? (() => window)
+        }),
         //-------------------自定义扩展----------------------
         ...extensions,
       ],
     }
   )
 
-  return editor
+  return {
+    editor,
+    blockMathPos,
+    blockMathLatex,
+    inlineMathPos,
+    inlineMathLatex
+  }
 }
