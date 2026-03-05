@@ -251,7 +251,7 @@ watch(
             <AlignRight class="size-4" />
           </button>
         </div>
-        <slot :setMediaRef="setMediaRef" />
+        <slot :setMediaRef="setMediaRef" :resizing="resizing" />
         <!-- 编辑模式：始终显示无边框输入框，占位符 Your Media Caption -->
         <input
           v-if="isEditable"
