@@ -614,39 +614,81 @@
 
 .tiptap ul[data-type=taskList] li {
   display: flex;
-  align-items: start;
-  margin: .5rem 0!important;
-  background-color: #0ea5e9;
-}
-
-.tiptap ul[data-type=taskList] li>label {
-  display: flex;
   align-items: center;
-  justify-content: center;
-  height: 100%;
-  margin-right: .5rem;
-  -webkit-user-select: none;
-  user-select: none;
-  background-color: #0ea5e9;
 }
 
+.tiptap ul[data-type=taskList] div {
+  padding: 0;
+  margin: 0;
+  line-height: 0; /* 或稍大一点 */
+}
+
+.tiptap ul[data-type=taskList] label {
+  display: block;
+  margin-right: 0.5rem;
+}
+
+
+/* Task list checkbox */
 .tiptap ul[data-type=taskList] input[type=checkbox] {
-  cursor: pointer;
-}
-
-.edra-editor input[type=checkbox] {
   position: relative;
-  top: 0rem;
   display: grid;
   place-content: center;
+  flex-shrink: 0;
   width: 1.25rem;
   height: 1.25rem;
   margin: 0;
+  box-sizing: border-box;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   cursor: pointer;
   background-color: transparent;
-  border: 1px solid var(--border-color);
-  border-radius: .25rem;
+  border: 1px solid var(--vtip-table-border);
+  border-radius: 0.25rem;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.1s ease;
+}
+
+.tiptap ul[data-type=taskList] input[type=checkbox]::after {
+  content: '';
+  width: 0.55rem;
+  height: 0.3rem;
+  border: 2px solid transparent;
+  border-top: 0;
+  border-right: 0;
+  transform: rotate(-45deg);
+  transform-origin: center;
+  opacity: 0;
+  transition:
+    opacity 0.1s ease,
+    transform 0.1s ease;
+}
+
+.tiptap ul[data-type=taskList] input[type=checkbox]:checked {
+  background-color: var(--vtip-code-function);
+  border-color: var(--vtip-code-function);
+  color: #fff;
+}
+
+.tiptap ul[data-type=taskList] input[type=checkbox]:checked::after {
+  border-color: currentColor;
+  opacity: 1;
+}
+
+.tiptap ul[data-type=taskList] input[type=checkbox]:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08);
+}
+
+.tiptap ul[data-type=taskList] input[type=checkbox]:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.tiptap ul[data-type=taskList] input[type=checkbox]:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
