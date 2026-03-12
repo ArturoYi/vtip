@@ -43,8 +43,8 @@
 /* 表格：包装器与基础样式（左/上留出空间供 grip），水平由容器内边距统一 */
 .tiptap .tableWrapper,
 .ProseMirror .tableWrapper {
-  padding: 1.25rem 0;
-  margin: 0.5rem 0;
+  padding: 1.25rem 1rem;
+  margin: 0.5rem -1rem;
   overflow-x: auto;
   overflow-y: visible;
 }
@@ -573,4 +573,80 @@
 
 .vtip-btn--primary:active:not(:disabled) {
   transform: scale(0.96);
+}
+
+/* List Styles */
+.tiptap ul,
+.tiptap ol,
+.ProseMirror ul,
+.ProseMirror ol {
+  padding: 0 1rem;
+  margin: 0.5rem 0.5rem 0.5rem 0.5rem;
+}
+
+.tiptap ul li,
+.tiptap ol li,
+.ProseMirror ul li,
+.ProseMirror ol li {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  padding-left: 0.25em;
+}
+
+/* Fix nested list spacing */
+.tiptap ul ul,
+.tiptap ul ol,
+.tiptap ol ul,
+.tiptap ol ol,
+.ProseMirror ul ul,
+.ProseMirror ul ol,
+.ProseMirror ol ul,
+.ProseMirror ol ol {
+  margin: 0;
+}
+
+/* Task List Styles */
+.tiptap ul[data-type=taskList] {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.tiptap ul[data-type=taskList] li {
+  display: flex;
+  align-items: start;
+  margin: .5rem 0!important;
+  background-color: #0ea5e9;
+}
+
+.tiptap ul[data-type=taskList] li>label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  margin-right: .5rem;
+  -webkit-user-select: none;
+  user-select: none;
+  background-color: #0ea5e9;
+}
+
+.tiptap ul[data-type=taskList] input[type=checkbox] {
+  cursor: pointer;
+}
+
+.edra-editor input[type=checkbox] {
+  position: relative;
+  top: 0rem;
+  display: grid;
+  place-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: .25rem;
 }
