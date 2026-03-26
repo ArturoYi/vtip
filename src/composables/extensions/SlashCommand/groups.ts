@@ -16,6 +16,12 @@ export const defaultCommandGroups: CommandGroup[] = [
     ],
   },
   {
+    title: 'Forma',
+    items: [
+      ...toolbarCommands.format,
+    ],
+  },
+  {
     title: 'Insert',
     items: [
       ...toolbarCommands.table,

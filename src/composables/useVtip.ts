@@ -43,16 +43,32 @@ import IFrameExtendedComponent from './components/IFrameExtended.vue'
 import IFramePlaceholderComponent from './components/IFramePlaceholder.vue'
 import { IFramePlaceholder } from './extensions/iframe/IFramePlaceholder'
 import { FileDrop } from './extensions/HandleFileDrop'
-
-
+import { locale as vtipLocale } from './i18n'
 
 export type UseVtipOptions = Partial<EditorOptions> & {
   /** 目录滚动容器，传入编辑器根元素 ref 的 getter，如 () => editorRef.value */
   scrollParent?: () => HTMLElement | Window
+  /** 语言设置，默认为 'zh' */
+  locale?: 'zh' | 'en'
+  /** 是否可编辑，默认为 true */
+  editable?: boolean
+  /** 文件上传钩子，返回上传后的 URL */
+  uploadFile?: (file: File, fileType: 'image' | 'audio' | 'video') => Promise<string>
 }
 
 export const useVtip = (options: UseVtipOptions = {}) => {
-  const { extensions = [], scrollParent: scrollParentFn, ...otherOptions } = options
+  const {
+    extensions = [],
+    scrollParent: scrollParentFn,
+    locale: customLocale = 'zh',
+    editable = true,
+    uploadFile,
+    ...otherOptions
+  } = options
+
+  // 设置全局语言
+  vtipLocale.value = customLocale
+
   // 创建 lowlight 实例
   const lowlight = createLowlight(common)
 
@@ -65,6 +81,7 @@ export const useVtip = (options: UseVtipOptions = {}) => {
   const editor = useEditor(
     {
       ...otherOptions,
+      editable,
       extensions: [
         // 基础功能套件
         StarterKit.configure({
@@ -150,6 +167,23 @@ export const useVtip = (options: UseVtipOptions = {}) => {
         FileDrop.configure({
           // 本地上传文件
           localFileGetter: async (fileType) => {
+            if (uploadFile) {
+              const input = document.createElement('input');
+              input.type = 'file';
+              input.accept = fileType as string;
+              return new Promise((resolve) => {
+                input.onchange = async () => {
+                  if (input.files?.length) {
+                    const file = input.files[0];
+                    const url = await uploadFile(file, fileType.startsWith('image') ? 'image' : fileType.startsWith('audio') ? 'audio' : 'video');
+                    resolve(url);
+                  } else {
+                    resolve(null);
+                  }
+                };
+                input.click();
+              });
+            }
             return "https://placehold.co/600x400";
           }
         }), // 文件上传

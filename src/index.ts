@@ -6,4 +6,15 @@ import { EditorContent } from '@tiptap/vue-3'
 import TableColMenu from './composables/components/TableColMenu.vue'
 import TableRowMenu from './composables/components/TableRowMenu.vue'
 
-export { useVtip, EditorContent, EditorToolbar, TableColMenu, TableRowMenu }
+import VtipEditor from './components/VtipEditor.vue'
+import VtipRenderer from './components/VtipRenderer.vue'
+
+export { 
+  useVtip, 
+  EditorContent, 
+  EditorToolbar, 
+  TableColMenu, 
+  TableRowMenu,
+  VtipEditor,
+  VtipRenderer
+}
