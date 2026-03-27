@@ -44,6 +44,65 @@ import IFramePlaceholderComponent from './components/IFramePlaceholder.vue'
 import { IFramePlaceholder } from './extensions/iframe/IFramePlaceholder'
 import { FileDrop } from './extensions/HandleFileDrop'
 import { locale as vtipLocale } from './i18n'
+function resolveUploadKind(accept: string): 'image' | 'audio' | 'video' {
+  if (accept.startsWith('image')) return 'image'
+  if (accept.startsWith('audio')) return 'audio'
+  return 'video'
+}
+
+/**
+ * 打开文件选择并在取消时 resolve（仅 change 时浏览器在取消下可能不会触发，导致 Promise 挂起）
+ */
+function openFilePickerAndUpload(
+  fileType: string,
+  uploadFile: NonNullable<UseVtipOptions['uploadFile']>
+): Promise<string | null> {
+  const input = document.createElement('input')
+  input.type = 'file'
+  input.accept = fileType
+  return new Promise((resolve) => {
+    let settled = false
+    const cleanup = () => {
+      window.removeEventListener('focus', onWindowFocus)
+      input.removeEventListener('change', onChange)
+      input.removeEventListener('cancel', onCancel)
+    }
+    const finish = (value: string | null) => {
+      if (settled) return
+      settled = true
+      cleanup()
+      resolve(value)
+    }
+    const onWindowFocus = () => {
+      window.setTimeout(() => {
+        if (!settled && !input.files?.length) {
+          finish(null)
+        }
+      }, 300)
+    }
+    const onCancel = () => finish(null)
+    const onChange = () => {
+      void (async () => {
+        if (!input.files?.length) {
+          finish(null)
+          return
+        }
+        const file = input.files[0]
+        try {
+          const url = await uploadFile(file, resolveUploadKind(fileType))
+          finish(url)
+        } catch (error) {
+          console.error(error)
+          finish(null)
+        }
+      })()
+    }
+    input.addEventListener('change', onChange)
+    input.addEventListener('cancel', onCancel)
+    window.addEventListener('focus', onWindowFocus)
+    input.click()
+  })
+}
 
 export type UseVtipOptions = Partial<EditorOptions> & {
   /** 目录滚动容器，传入编辑器根元素 ref 的 getter，如 () => editorRef.value */
@@ -165,26 +224,12 @@ export const useVtip = (options: UseVtipOptions = {}) => {
         IFrameExtended(IFrameExtendedComponent),
         IFramePlaceholder(IFramePlaceholderComponent),
         FileDrop.configure({
-          // 本地上传文件
+          supportsLocalUpload: !!uploadFile,
           localFileGetter: async (fileType) => {
-            if (uploadFile) {
-              const input = document.createElement('input');
-              input.type = 'file';
-              input.accept = fileType as string;
-              return new Promise((resolve) => {
-                input.onchange = async () => {
-                  if (input.files?.length) {
-                    const file = input.files[0];
-                    const url = await uploadFile(file, fileType.startsWith('image') ? 'image' : fileType.startsWith('audio') ? 'audio' : 'video');
-                    resolve(url);
-                  } else {
-                    resolve(null);
-                  }
-                };
-                input.click();
-              });
+            if (!uploadFile) {
+              return null
             }
-            return "https://placehold.co/600x400";
+            return openFilePickerAndUpload(fileType as string, uploadFile)
           }
         }), // 文件上传
         SlashCommand,// 斜杠命令

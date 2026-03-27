@@ -16,6 +16,8 @@
   /* Slash 菜单空状态文本色 */
   --vtip-slash-group-title: #9ca3af;
   /* Slash 菜单分组标题色 */
+  --vtip-toolbar-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  /* 工具栏字号下拉箭头（SVG data URL，描边随深浅色主题） */
 
   /* Scrollbar (滚动条) */
   --vtip-scrollbar-thumb: #4b5563; /* 滚动条滑块颜色 */
@@ -81,6 +83,7 @@
   --vtip-slash-item-text-hover: #ffffff; /* Slash 菜单项悬停文本色 */
   --vtip-slash-empty-text: #9ca3af; /* Slash 菜单空状态文本色 */
   --vtip-slash-group-title: #9ca3af; /* Slash 菜单分组标题色 */
+  --vtip-toolbar-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
 
   /* Scrollbar (滚动条) */
   --vtip-scrollbar-thumb: #4b5563; /* 滚动条滑块颜色 */
@@ -146,6 +149,7 @@
   --vtip-slash-item-text-hover: #111827; /* Slash 菜单项悬停文本色 */
   --vtip-slash-empty-text: #6b7280; /* Slash 菜单空状态文本色 */
   --vtip-slash-group-title: #6b7280; /* Slash 菜单分组标题色 */
+  --vtip-toolbar-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
 
   /* Scrollbar (滚动条) */
   --vtip-scrollbar-thumb: #d1d5db; /* 滚动条滑块颜色 */

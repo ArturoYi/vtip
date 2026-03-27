@@ -8,6 +8,7 @@ import { useScreen } from '../useScreen';
 const props = defineProps<NodeViewProps>();
 const { editor } = props;
 const { isMaxSm } = useScreen();
+const canLocalUpload = editor.storage.fileDrop.supportsLocalUpload;
 
 const videoUrl = ref('');
 const isUploading = ref(false);
@@ -59,9 +60,12 @@ async function openFileDialog() {
       <div
         :class="[
           'flex min-w-0 rounded-xl',
-          isMaxSm
-            ? 'flex-col w-full h-[300px] divide-y divide-[var(--vtip-placeholder-border)]'
-            : 'flex-row w-full max-w-2xl h-[150px] divide-x divide-[var(--vtip-placeholder-border)]'
+          isMaxSm ? 'flex-col w-full h-[300px]' : 'flex-row w-full max-w-2xl h-[150px]',
+          canLocalUpload
+            ? isMaxSm
+              ? 'divide-y divide-[var(--vtip-placeholder-border)]'
+              : 'divide-x divide-[var(--vtip-placeholder-border)]'
+            : ''
         ]"
       >
         <!-- Uploading Overlay -->
@@ -80,6 +84,7 @@ async function openFileDialog() {
 
         <!-- Left/Top: Upload -->
         <div
+          v-if="canLocalUpload"
           :class="[
             'flex flex-col items-center justify-center p-6 relative min-w-0',
             isMaxSm ? 'flex-1' : 'flex-1 min-w-0'

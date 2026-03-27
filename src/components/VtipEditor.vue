@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { ref, onUnmounted, watch } from 'vue'
+import { ref, onUnmounted, watch, withDefaults } from 'vue'
 import { EditorContent } from '@tiptap/vue-3'
 import { useVtip } from '../composables/useVtip'
+import { useVtipThemeShell, type VtipThemeMode, type VtipThemeTokens } from '../composables/useVtipTheme'
 import EditorToolbar from './toolbar/EditorToolbar.vue'
 import TableColMenu from '../composables/components/TableColMenu.vue'
 import TableRowMenu from '../composables/components/TableRowMenu.vue'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   /** 编辑器内容 (HTML 或 JSON) */
   modelValue?: any
   /** 语言设置，默认为 'zh' */
@@ -15,7 +16,13 @@ const props = defineProps<{
   placeholder?: string
   /** 文件上传钩子，返回上传后的 URL */
   uploadFile?: (file: File, fileType: 'image' | 'audio' | 'video') => Promise<string>
-}>()
+  /** 主题：`light` / `dark`，或 `auto` 跟随系统 */
+  theme?: VtipThemeMode
+  /** 按实例覆盖 `theme.css` 中的 `--vtip-*` 变量 */
+  themeTokens?: VtipThemeTokens
+}>(), {
+  theme: 'auto',
+})
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: any): void
@@ -24,6 +31,11 @@ const emit = defineEmits<{
 }>()
 
 const editorWrapperRef = ref<HTMLElement | null>(null)
+
+const { resolvedTheme, themeInlineStyle } = useVtipThemeShell(
+  () => props.theme,
+  () => props.themeTokens
+)
 
 const { editor } = useVtip({
   content: props.modelValue,
@@ -63,7 +75,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div ref="editorWrapperRef" class="vtip-editor-container" v-if="editor">
+  <div
+    ref="editorWrapperRef"
+    class="vtip-editor-container"
+    :data-theme="resolvedTheme"
+    :style="themeInlineStyle"
+    v-if="editor"
+  >
     <EditorToolbar :editor="editor" />
     <div class="vtip-editor-content">
       <editor-content :editor="editor" />
@@ -79,9 +97,9 @@ onUnmounted(() => {
 .vtip-editor-container {
   display: flex;
   flex-direction: column;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--vtip-slash-menu-border);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--vtip-slash-menu-bg);
   overflow: hidden;
   position: relative;
 }
@@ -97,11 +115,4 @@ onUnmounted(() => {
   min-height: 180px;
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .vtip-editor-container {
-    background: #111827;
-    border-color: #374151;
-  }
-}
 </style>

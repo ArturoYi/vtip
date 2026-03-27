@@ -1,7 +1,8 @@
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 
 export const locale = ref<'zh' | 'en'>('zh');
 
+/** 中英文文案表：新增面向用户的可见文案时请同时补充 zh / en。 */
 export const translations = {
   zh: {
     headings: '标题',
@@ -33,9 +34,47 @@ export const translations = {
     'audio-placeholder': '音频',
     'video-placeholder': '视频',
     'iframe-placeholder': '切入',
+    mediaImageLoading: '加载中…',
+    mediaImageLoadFailed: '图片加载失败',
+    mediaImageAriaLoadFailed: '图片无法加载',
+    mediaImagePreviewDialog: '图片预览',
+    mediaImagePreviewClose: '关闭预览',
+    mediaImagePreviewOpen: '点击查看大图',
+    mediaAudioLoading: '加载音频…',
+    mediaAudioLoadFailed: '音频无法播放',
+    mediaAudioAriaLoadFailed: '音频无法播放',
     undo: '撤销',
     redo: '重做',
     enterUrl: '请输入链接地址:',
+    fontSize: '字号',
+    fontSizeDefault: '默认',
+    textColor: '文字颜色',
+    highlightColor: '高亮',
+    textColorsSection: '文字颜色',
+    highlightColorsSection: '高亮颜色',
+    colorPicker: '文字与高亮色',
+    colorClear: '默认',
+    highlightClear: '无高亮',
+    quickColorGray900: '深灰',
+    quickColorGray700: '灰色',
+    quickColorGray500: '浅灰',
+    quickColorRed: '红',
+    quickColorOrange: '橙',
+    quickColorAmber: '琥珀',
+    quickColorGreen: '绿',
+    quickColorBlue: '蓝',
+    quickColorViolet: '紫',
+    quickColorPink: '粉',
+    quickHlYellow: '黄',
+    quickHlGreen: '绿',
+    quickHlCyan: '青',
+    quickHlBlue: '蓝',
+    quickHlPurple: '紫',
+    quickHlRed: '红',
+    quickHlAmber: '琥珀',
+    quickHlGray: '灰',
+    colorCustom: '当前色',
+    highlightCustom: '当前高亮',
   },
   en: {
     headings: 'Headings',
@@ -67,12 +106,52 @@ export const translations = {
     'audio-placeholder': 'Audio',
     'video-placeholder': 'Video',
     'iframe-placeholder': 'Embed',
+    mediaImageLoading: 'Loading…',
+    mediaImageLoadFailed: 'Could not load image',
+    mediaImageAriaLoadFailed: 'Image failed to load',
+    mediaImagePreviewDialog: 'Image preview',
+    mediaImagePreviewClose: 'Close preview',
+    mediaImagePreviewOpen: 'View full size',
+    mediaAudioLoading: 'Loading audio…',
+    mediaAudioLoadFailed: 'Could not play audio',
+    mediaAudioAriaLoadFailed: 'Audio failed to play',
     undo: 'Undo',
     redo: 'Redo',
     enterUrl: 'Enter the URL of the link:',
+    fontSize: 'Font size',
+    fontSizeDefault: 'Default',
+    textColor: 'Text color',
+    highlightColor: 'Highlight',
+    textColorsSection: 'Text colors',
+    highlightColorsSection: 'Highlight colors',
+    colorPicker: 'Text & highlight colors',
+    colorClear: 'Default',
+    highlightClear: 'None',
+    quickColorGray900: 'Gray 900',
+    quickColorGray700: 'Gray 700',
+    quickColorGray500: 'Gray 500',
+    quickColorRed: 'Red',
+    quickColorOrange: 'Orange',
+    quickColorAmber: 'Amber',
+    quickColorGreen: 'Green',
+    quickColorBlue: 'Blue',
+    quickColorViolet: 'Violet',
+    quickColorPink: 'Pink',
+    quickHlYellow: 'Yellow',
+    quickHlGreen: 'Green',
+    quickHlCyan: 'Cyan',
+    quickHlBlue: 'Blue',
+    quickHlPurple: 'Purple',
+    quickHlRed: 'Red',
+    quickHlAmber: 'Amber',
+    quickHlGray: 'Gray',
+    colorCustom: 'Current',
+    highlightCustom: 'Current',
   }
 };
 
-export const t = (key: string) => {
-  return computed(() => (translations[locale.value] as any)[key] || key).value;
-};
+/** 当前语言下的文案；在模板或 setup 中调用时会依赖 locale，切换语言可正常更新。 */
+export function t(key: string): string {
+  const table = translations[locale.value] as Record<string, string>;
+  return table[key] ?? key;
+}

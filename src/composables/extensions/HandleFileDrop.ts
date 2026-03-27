@@ -7,10 +7,14 @@ export interface FileDropOptions {
 	 */
 	handler: (files: string) => Promise<string>;
 	/**
-	 * 本地文件选择器/获取器。默认返回空字符串。
+	 * 本地文件选择器/获取器。默认返回 null。
 	 * 此函数允许使用者打开本地文件选择器或以其他方式为给定文件类型提供本地文件引用。
 	 */
 	localFileGetter: (fileType: FileType) => Promise<string | null>;
+	/**
+	 * 是否提供本地上传（如占位块中的「上传」按钮）。未配置 uploadFile 时应为 false。
+	 */
+	supportsLocalUpload: boolean;
 }
 
 declare module '@tiptap/vue-3' {
@@ -41,6 +45,10 @@ declare module '@tiptap/vue-3' {
 			 * 本地选择器/获取器
 			 */
 			localFileGetter: (fileType: string) => Promise<string | null>;
+			/**
+			 * 是否展示本地上传入口
+			 */
+			supportsLocalUpload: boolean;
 		};
 	}
 }
@@ -53,7 +61,8 @@ export const FileDrop = Extension.create<FileDropOptions>({
 		return {
 			handler: async (file: string) => file,
 			assetsGetter: async () => [],
-			localFileGetter: async () => ''
+			localFileGetter: async () => null,
+			supportsLocalUpload: false
 		};
 	},
 
@@ -61,7 +70,8 @@ export const FileDrop = Extension.create<FileDropOptions>({
 	addStorage() {
 		return {
 			handler: this.options.handler,
-			localFileGetter: this.options.localFileGetter
+			localFileGetter: this.options.localFileGetter,
+			supportsLocalUpload: this.options.supportsLocalUpload
 		};
 	},
 

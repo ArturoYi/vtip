@@ -372,3 +372,116 @@ export const toolbarCommands: Record<string, VtipToolBarCommands[]> = {
         },
     ],
 }
+
+// —— 工具栏：字号与快捷色（TextStyle + FontSize + Color，Highlight multicolor）——
+
+export interface ToolbarFontSizePreset {
+    /** 空字符串表示恢复默认（unsetFontSize） */
+    value: string
+    /** 存在时用 i18n；否则界面直接显示 value（如 1rem） */
+    labelKey?: string
+}
+
+export const TOOLBAR_FONT_SIZE_PRESETS: ToolbarFontSizePreset[] = [
+    { value: '', labelKey: 'fontSizeDefault' },
+    { value: '0.75rem' },
+    { value: '0.875rem' },
+    { value: '1rem' },
+    { value: '1.125rem' },
+    { value: '1.25rem' },
+    { value: '1.5rem' },
+    { value: '2rem' },
+]
+
+/**
+ * 工具栏色板：2×5，与「文字色 / 高亮色」共用同一组 hex（高亮区用实心底 + 白 A）。
+ * 顺序：上行左→右，下行左→右。
+ */
+export const TOOLBAR_SWATCH_PALETTE: readonly string[] = [
+    '#ffffff',
+    '#1e40af',
+    '#b91c1c',
+    '#15803d',
+    '#6b7280',
+    '#c2410c',
+    '#db2777',
+    '#6b21a8',
+    '#7f1d1d',
+    '#65a30d',
+]
+
+export interface ToolbarTypographyState {
+    fontSize: string
+    color: string
+    highlightColor: string
+}
+
+/** 读选区/光标处的 textStyle、highlight，供下拉展示 */
+export function getToolbarTypographyState(editor: Editor): ToolbarTypographyState {
+    const ts = editor.getAttributes('textStyle') as { fontSize?: string | null; color?: string | null }
+    const hl = editor.getAttributes('highlight') as { color?: string | null }
+    return {
+        fontSize: ts.fontSize ?? '',
+        color: ts.color ?? '',
+        highlightColor: hl.color ?? '',
+    }
+}
+
+/** 统一 hex 大小写与 #rgb → #rrggbb，便于与预设选项比对 */
+export function normalizeToolbarHexColor(input: string): string {
+    const s = input.trim().toLowerCase()
+    if (!s || !s.startsWith('#')) return s
+    if (s.length === 4) {
+        return `#${s[1]}${s[1]}${s[2]}${s[2]}${s[3]}${s[3]}`
+    }
+    return s
+}
+
+export function toolbarHexEquals(a: string, b: string): boolean {
+    if (!a && !b) return true
+    return normalizeToolbarHexColor(a) === normalizeToolbarHexColor(b)
+}
+
+export function isToolbarFontSizePreset(value: string): boolean {
+    return TOOLBAR_FONT_SIZE_PRESETS.some((p) => p.value === value)
+}
+
+export function isToolbarSwatchPaletteColor(value: string): boolean {
+    if (!value) return true
+    return TOOLBAR_SWATCH_PALETTE.some((c) => toolbarHexEquals(c, value))
+}
+
+export function isToolbarQuickTextColor(value: string): boolean {
+    return isToolbarSwatchPaletteColor(value)
+}
+
+export function isToolbarQuickHighlightColor(value: string): boolean {
+    return isToolbarSwatchPaletteColor(value)
+}
+
+export function applyToolbarFontSize(editor: Editor, value: string): void {
+    const chain = editor.chain().focus()
+    if (!value) {
+        chain.unsetFontSize().run()
+        return
+    }
+    chain.setFontSize(value).run()
+}
+
+export function applyToolbarTextColor(editor: Editor, value: string): void {
+    const chain = editor.chain().focus()
+    if (!value) {
+        chain.unsetColor().run()
+        return
+    }
+    chain.setColor(value).run()
+}
+
+export function applyToolbarHighlightColor(editor: Editor, value: string): void {
+    const chain = editor.chain().focus()
+    if (!value) {
+        chain.unsetHighlight().run()
+        return
+    }
+    chain.setHighlight({ color: value }).run()
+}

@@ -8,12 +8,16 @@ import TableRowMenu from './composables/components/TableRowMenu.vue'
 
 import VtipEditor from './components/VtipEditor.vue'
 import VtipRenderer from './components/VtipRenderer.vue'
+import type { VtipThemeMode, VtipThemeTokens } from './composables/useVtipTheme'
+import { useVtipThemeShell } from './composables/useVtipTheme'
 
-export { 
-  useVtip, 
-  EditorContent, 
-  EditorToolbar, 
-  TableColMenu, 
+export type { VtipThemeMode, VtipThemeTokens }
+export {
+  useVtip,
+  useVtipThemeShell,
+  EditorContent,
+  EditorToolbar,
+  TableColMenu,
   TableRowMenu,
   VtipEditor,
   VtipRenderer
