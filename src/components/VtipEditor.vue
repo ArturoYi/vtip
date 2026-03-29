@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onUnmounted, watch, withDefaults } from 'vue'
+import { ref, onUnmounted, watch } from 'vue'
 import { EditorContent } from '@tiptap/vue-3'
 import { useVtip } from '../composables/useVtip'
 import { useVtipThemeShell, type VtipThemeMode, type VtipThemeTokens } from '../composables/useVtipTheme'
