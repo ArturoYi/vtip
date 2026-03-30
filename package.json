@@ -1,6 +1,6 @@
 {
-  "name": "@arturoyi/vtip-edit",
-  "version": "0.0.1",
+  "name": "vtip-edit",
+  "version": "1.0.0",
   "description": "VtipEdit — lightweight Vue 3 WYSIWYG rich-text editor built on Tiptap — composable, tree-shakable, and npm-ready.",
   "type": "module",
   "main": "./dist/vtip-edit.cjs",

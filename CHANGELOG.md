@@ -2,6 +2,8 @@
 
 本项目遵循约定式提交；以下内容基于 Git 历史由 [standard-version](https://github.com/conventional-changelog/standard-version) 自动生成。
 
+## [1.0.0](https://github.com/ArturoYi/vtip-edit/compare/v0.0.1...v1.0.0) (2026-03-30)
+
 ### 0.0.1 (2026-03-30)
 
 
