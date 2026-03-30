@@ -1,6 +1,7 @@
 # 推送 v* tag 时构建并发布到 npm。
 # 在仓库 Variables 中设置 ENABLE_GITHUB_RELEASE=true 可在发布后自动创建 GitHub Release（说明摘取自 CHANGELOG）。
-# Secrets: NPM_TOKEN（npm 访问令牌，需具备 publish 权限）
+# Secrets: NPM_TOKEN（npm 访问令牌；若账号开启发布 2FA，须使用 Classic「Automation」
+#   类型或适用于 CI 的 Granular Token，否则会报 EOTP 要求一次性密码）
 
 name: Release
 

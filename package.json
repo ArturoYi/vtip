@@ -1,5 +1,5 @@
 {
-  "name": "vtip",
+  "name": "@arturoyi/vtip",
   "version": "0.0.1",
   "description": "Lightweight Vue 3 WYSIWYG rich-text editor built on Tiptap — composable, tree-shakable, and npm-ready.",
   "type": "module",
