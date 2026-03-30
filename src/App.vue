@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { VtipEditor, VtipRenderer, type VtipThemeMode, type VtipThemeTokens } from './index'
 
-const content = ref('<p>Hello Vtip! 这是你的富文本编辑器。</p><h2>功能展示</h2><ul><li>支持数学公式：<span data-type="math_inline" data-latex="E=mc^2"></span></li><li>支持代码高亮</li><li>支持表格和媒体</li></ul>')
+const content = ref('<p>Hello VtipEdit! 这是你的富文本编辑器。</p><h2>功能展示</h2><ul><li>支持数学公式：<span data-type="math_inline" data-latex="E=mc^2"></span></li><li>支持代码高亮</li><li>支持表格和媒体</li></ul>')
 
 /** 由外部（例如宿主应用的主题 store）传入 */
 const editorTheme = ref<VtipThemeMode>('auto')
@@ -24,7 +24,7 @@ const editorThemeTokens = ref<VtipThemeTokens>({
 <template>
   <div class="demo-container">
     <header class="demo-header">
-      <h1>Vtip Editor & Renderer Demo</h1>
+      <h1>VtipEdit — Editor &amp; Renderer Demo</h1>
       <p class="demo-theme-control">
         <label for="demo-theme">编辑器主题（外部传入）</label>
         <select id="demo-theme" v-model="editorTheme">

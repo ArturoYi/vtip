@@ -1,18 +1,18 @@
 {
-  "name": "@arturoyi/vtip",
+  "name": "@arturoyi/vtip-edit",
   "version": "0.0.1",
-  "description": "Lightweight Vue 3 WYSIWYG rich-text editor built on Tiptap — composable, tree-shakable, and npm-ready.",
+  "description": "VtipEdit — lightweight Vue 3 WYSIWYG rich-text editor built on Tiptap — composable, tree-shakable, and npm-ready.",
   "type": "module",
-  "main": "./dist/vtip.cjs",
-  "module": "./dist/vtip.js",
+  "main": "./dist/vtip-edit.cjs",
+  "module": "./dist/vtip-edit.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/vtip.js",
-      "require": "./dist/vtip.cjs"
+      "import": "./dist/vtip-edit.js",
+      "require": "./dist/vtip-edit.cjs"
     },
-    "./style.css": "./dist/vtip.css"
+    "./style.css": "./dist/vtip-edit.css"
   },
   "files": [
     "dist",
@@ -40,7 +40,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ArturoYi/vtip.git"
+    "url": "https://github.com/ArturoYi/vtip-edit.git"
   },
   "keywords": [
     "vue",

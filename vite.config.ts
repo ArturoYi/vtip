@@ -19,8 +19,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'Vtip',
-      fileName: 'vtip',
+      name: 'VtipEdit',
+      fileName: 'vtip-edit',
       formats: ['es', 'cjs']
     },
     rollupOptions: {

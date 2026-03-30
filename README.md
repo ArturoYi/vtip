@@ -1,6 +1,8 @@
-# vtip
+# VtipEdit
 
 基于 **Vue 3**、**Tiptap 3**、**Reka UI** 与 **UnoCSS** 的富文本编辑器。原子化样式已预编译进发布的 CSS，**使用方无需**在业务项目里再配置 UnoCSS。
+
+npm 包名：`@arturoyi/vtip-edit`。
 
 目前只为个人使用，如果你感兴趣请二开，我还在不断更改中。
 
@@ -17,20 +19,20 @@
 | | |
 | --- | --- |
 | **Peer 依赖** | `vue` ^3、`reka-ui` ^2.8 |
-| **与 Tiptap 的关系** | 安装 `vtip` 时会携带其对 Tiptap 的 **dependencies**，但库构建时 **不会** 把 `@tiptap/*` 打进包内，需由你的打包器从 `node_modules` 解析（通常与 `vtip` 一并提升安装）。请与当前 `vtip` 版本所使用的 Tiptap 大版本保持兼容。 |
+| **与 Tiptap 的关系** | 安装 `@arturoyi/vtip-edit` 时会携带其对 Tiptap 的 **dependencies**，但库构建时 **不会** 把 `@tiptap/*` 打进包内，需由你的打包器从 `node_modules` 解析（通常与本包一并提升安装）。请与当前 `vtip-edit` 版本所使用的 Tiptap 大版本保持兼容。 |
 
 ## 安装
 
 ```bash
-npm install vtip vue reka-ui
+npm install @arturoyi/vtip-edit vue reka-ui
 # 或
-pnpm add vtip vue reka-ui
+pnpm add @arturoyi/vtip-edit vue reka-ui
 ```
 
 在应用中一次性引入样式：
 
 ```ts
-import 'vtip/style.css'
+import '@arturoyi/vtip-edit/style.css'
 ```
 
 ## 使用说明
@@ -42,8 +44,8 @@ import 'vtip/style.css'
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
-import { VtipEditor } from 'vtip'
-import 'vtip/style.css'
+import { VtipEditor } from '@arturoyi/vtip-edit'
+import '@arturoyi/vtip-edit/style.css'
 
 const content = ref('<p>Hello World!</p>')
 
@@ -70,8 +72,8 @@ async function uploadFile(file: File, fileType: 'image' | 'audio' | 'video') {
 
 ```vue
 <script setup lang="ts">
-import { VtipRenderer } from 'vtip'
-import 'vtip/style.css'
+import { VtipRenderer } from '@arturoyi/vtip-edit'
+import '@arturoyi/vtip-edit/style.css'
 
 const content = '<p>仅预览。</p>'
 </script>
@@ -86,7 +88,7 @@ const content = '<p>仅预览。</p>'
 内部使用的无 UI 钩子。可传入额外的 Tiptap **`extensions`**（会接在内置扩展之后），以及任意 **`EditorOptions`** 字段（例如 `editorProps`、`autocorrect` 等）。
 
 ```ts
-import { useVtip } from 'vtip'
+import { useVtip } from '@arturoyi/vtip-edit'
 import { EditorContent } from '@tiptap/vue-3'
 // ……再与自定义布局、工具栏等组合
 ```
@@ -118,9 +120,9 @@ import { EditorContent } from '@tiptap/vue-3'
 
 ## 样式
 
-- 编辑器全局样式在 **`vtip/style.css`**（含主题 token 与 ProseMirror / Tiptap 规则）。
+- 编辑器全局样式在 **`@arturoyi/vtip-edit/style.css`**（含主题 token 与 ProseMirror / Tiptap 规则）。
 - 可通过覆盖 **CSS 变量** 快速换肤，例如：`--vtip-editor-bg`、`--vtip-editor-text`、`--vtip-table-border`、`--vtip-code-bg`、`--vtip-slash-menu-bg`。完整列表见本仓库 `src/style/theme/theme.css`.
-- UnoCSS 工具类已编译进发布 CSS；业务项目**不必**为使用 `vtip` 而单独配置 UnoCSS。
+- UnoCSS 工具类已编译进发布 CSS；业务项目**不必**为使用 `vtip-edit` 而单独配置 UnoCSS。
 - 数学公式依赖 **KaTeX**；若公式无样式，可在应用中引入 KaTeX 的 CSS（例如 `katex/dist/katex.min.css`），版本尽量与依赖中的 KaTeX 一致。
 
 ## 本地开发
