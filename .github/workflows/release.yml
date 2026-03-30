@@ -1,0 +1,62 @@
+# 推送 v* tag 时构建并发布到 npm。
+# 在仓库 Variables 中设置 ENABLE_GITHUB_RELEASE=true 可在发布后自动创建 GitHub Release（说明摘取自 CHANGELOG）。
+# Secrets: NPM_TOKEN（npm 访问令牌，需具备 publish 权限）
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Publish to npm
+        run: pnpm publish --access public --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Prepare release notes from CHANGELOG
+        if: ${{ vars.ENABLE_GITHUB_RELEASE == 'true' }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          awk -v ver="$VERSION" '
+            $0 ~ /^### / && index($0, ver) { found=1; print; next }
+            found && /^### / { exit }
+            found { print }
+          ' CHANGELOG.md > RELEASE_BODY.md
+          test -s RELEASE_BODY.md || echo "（未在 CHANGELOG 中匹配到 ${VERSION}，请检查发布流程是否已更新日志。）" > RELEASE_BODY.md
+
+      - name: Create GitHub Release
+        if: ${{ vars.ENABLE_GITHUB_RELEASE == 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          body_path: RELEASE_BODY.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
